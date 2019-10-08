@@ -1,7 +1,7 @@
 Steven BJones
 
-Week2: 2.5 uur
+Week2: 3 uur
 
-Bekijken slides week 1 : 1uur
-Inorde maken Github: 1uur
+Bestuderen slides/oefeningen week 1 : 2 uur
+Inorde maken Github: 0.5 uur
 Inorde brengen webserver : 0.5 uur
