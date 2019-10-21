@@ -7,6 +7,14 @@ Inorde maken Github: 0.5 uur
 Inorde brengen webserver : 1 uur
 Eerste helft van de les meevolgen : 2uur
 
-Week3: 
+Week3: 6uur
 
-Les volgen : 2uur
+Bestuderen slides week 2: 0.5uur
+Voorbeeld oefening bekijken en bestuderen, api aanpassen en laten werken : 3uur
+Slides bekijken week 3 : 0.5uur
+Installatie programma's : 2uur
+
+Week4: 
+
+Fixen installatie cordova: 1uur
+les volgen : 4uur
