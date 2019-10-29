@@ -14,7 +14,11 @@ Voorbeeld oefening bekijken en bestuderen, api aanpassen en laten werken : 3uur
 Slides bekijken week 3 : 0.5uur
 Installatie programma's : 2uur
 
-Week4: 
+Week4: 5uur 
 
 Fixen installatie cordova: 1uur
 les volgen : 4uur
+
+Week6:
+
+Oefenen met cordova project: 5uur
