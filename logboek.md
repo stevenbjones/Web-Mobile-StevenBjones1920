@@ -27,3 +27,5 @@ Werken aan api: 1uur
 
 Week7: 
 
+Oefenen op php form : 0.5 uur
+
