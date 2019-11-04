@@ -1,0 +1,1 @@
+<?echo "this php file is real"?>
