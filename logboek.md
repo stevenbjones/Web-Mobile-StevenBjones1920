@@ -19,6 +19,11 @@ Week4: 5uur
 Fixen installatie cordova: 1uur
 les volgen : 4uur
 
-Week6:
+Week6: 8uur
 
 Oefenen met cordova project: 5uur
+Oefenen php: 2uur
+Werken aan api: 1uur
+
+Week7: 
+
