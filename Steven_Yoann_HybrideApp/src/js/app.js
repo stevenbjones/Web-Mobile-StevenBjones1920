@@ -74,6 +74,19 @@ var app = new Framework7({
     },
 });
 
+ //Request opties
+ let opties = {
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    mode: "cors", // no-cors, *cors, same-origin
+    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: "omit", // include, *same-origin, omit
+    headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+    }
+};
+
+
 // url van de api
 let url = "http://stevenbjones.azurewebsites.net/php/api.php";
 //Maak eventListner aan voor onload pagina
@@ -113,7 +126,7 @@ window.addEventListener('load', function() {
                   <a href="#" id="btnLogin" >Sign In</a>
                 </li>
               </ul>
-              <div class="block-footer" id="loginMsg" >Some text about login information.<br>Click "Sign In" to close Login Screen</div>
+              <div class="block-footer" id="loginMsg" >Some text about login information.<br>Click "Sign In" to close Login Screen</div>             
             </div>
           </div>
         </div>
@@ -146,18 +159,14 @@ window.addEventListener('load', function() {
             return;
         }
 
-        //Request opties
-        let opties = {
-            method: "POST", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, *cors, same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "omit", // include, *same-origin, omit
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
+       TestLogin();        
+        
 
+        document.getElementById("titelHome").innerHTML = `Welkom ${username.value}`;
+    })
+
+    function TestLogin()
+    {
         //REquest body
         opties.body = JSON.stringify({
             format: "json",
@@ -176,7 +185,7 @@ window.addEventListener('load', function() {
                 // test status van de response        
                 if (responseData.status < 200 || responseData.status > 299) {
                     // login faalde, boodschap weergeven                  
-                    loginMsg.innerHTML = "Login mislukt : deze naam/paswoord combinatie bestaat niet";
+                    MaakRegisterLink();                   
                     // return, zodat de rest van de fetch niet verder uitgevoerd wordt
                     return;
                 }
@@ -187,8 +196,10 @@ window.addEventListener('load', function() {
                    
                    //Hier wilt zeggen dat de user bestaat, close de login
                     loginScreen.close();
-                } else {
-                    loginMsg.innerHTML = "Login mislukt : deze naam/paswoord combinatie bestaat niet";
+                } 
+
+                else {
+                    MaakRegisterLink();                 
                 }
             
             })
@@ -197,15 +208,19 @@ window.addEventListener('load', function() {
                 console.log("fout : " + error);
             });
 
-
         ///////////////////////////////////////////////////////////
+        function MaakRegisterLink(){
+            loginMsg.innerHTML = ` Login mislukt : deze naam/paswoord combinatie bestaat niet
+            <a href="/form/"  id = "registerLink" class="item-content item-link">
+            <div class="item-inner">
+              <div class="item-title">Registreren</div>
+            </div>`
 
+            document.getElementById("registerLink").addEventListener("click",function(){loginScreen.close();})
+        }    
 
         console.log(`naam : ${username.value} password: ${password.value}`);
-        
 
-        document.getElementById("titelHome").innerHTML = `Welkom ${username.value}`;
-    })
-
+    }
 
 })
