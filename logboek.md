@@ -31,5 +31,5 @@ Oefenen op php form : 0.5 uur
 oefenen api: 5uur
 Werken aan api: 1uur
 Les: 4uur
-Werken aan login pagina van project: 6uur //Probleem met cors --> server blokeerde het
+Werken aan login pagina van project: 7uur (Probleem met cors --> server blokeerde het)
 
