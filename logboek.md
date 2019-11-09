@@ -1,4 +1,4 @@
-Steven BJones
+Steven Bjones
 
 Week2: 6 uur
 
@@ -25,7 +25,11 @@ Oefenen met cordova project: 5uur
 Oefenen php: 2uur
 Werken aan api: 1uur
 
-Week7: 
+Week7: 13h
 
 Oefenen op php form : 0.5 uur
+oefenen api: 5uur
+Werken aan api: 1uur
+Les: 4uur
+Werken aan login pagina van project: 6uur //Probleem met cors --> server blokeerde het
 
