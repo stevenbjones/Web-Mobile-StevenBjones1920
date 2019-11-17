@@ -35,4 +35,4 @@ Werken aan login pagina van project: 7uur (Probleem met cors --> server blokeerd
 
 Week8: 
 
-Werken aan register user voor project : 2uur
+Werken aan register user voor project : 3uur
