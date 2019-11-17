@@ -33,3 +33,6 @@ Werken aan api: 1uur
 Les: 4uur
 Werken aan login pagina van project: 7uur (Probleem met cors --> server blokeerde het)
 
+Week8: 
+
+Werken aan register user voor project : 2uur

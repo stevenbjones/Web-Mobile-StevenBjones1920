@@ -71,11 +71,56 @@ var app = new Framework7({
                 cordovaApp.init(f7);
             }
         },
+        
+        //Bij het laden van de formpage wordt deze code uitevoerd
+        //Registreer user
+
+        //TODO: moet nog controleren of user al bestaat
+        pageAfterIn: function (FormPage) {
+          
+         document.getElementById("btnRegister").addEventListener("click",function(){
+        
+          let username = document.getElementById("registerNaam");
+          let password = document.getElementById("registerPassword");
+         
+          opties.body = JSON.stringify({
+            format: "json",
+            table: "user",
+            bewerking: "register",
+            username: username.value,
+            password: password.value,
+        });
+
+        //Doe een fetch
+        fetch(url, opties)
+            .then(function(response) {
+                return response;
+            })
+            .then(function(responseData) {
+                // test status van de response  
+                      
+                if (responseData.status < 200 || responseData.status > 299) {
+                    // login faalde, boodschap weergeven                  
+                    alert("fout");
+                    // return, zodat de rest van de fetch niet verder uitgevoerd wordt
+                    return;
+                }  
+                alert(`user ${username.value} is succesvol aangemaakt`) 
+                //TODO: Hier moet nog navigatie naar homescherm komen             
+            })
+            .catch(function(error) {
+                // verwerk de fout
+                console.log("fout : " + error);
+            });
+
+         })        
+        },
+  /////////////////////////////////////////    
     },
 });
 
- //Request opties
- let opties = {
+//Request opties
+let opties = {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     mode: "cors", // no-cors, *cors, same-origin
     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -89,6 +134,7 @@ var app = new Framework7({
 
 // url van de api
 let url = "http://stevenbjones.azurewebsites.net/php/api.php";
+
 //Maak eventListner aan voor onload pagina
 window.addEventListener('load', function() {
 
@@ -159,14 +205,13 @@ window.addEventListener('load', function() {
             return;
         }
 
-       TestLogin();        
-        
+        TestLogin();
 
         document.getElementById("titelHome").innerHTML = `Welkom ${username.value}`;
     })
 
-    function TestLogin()
-    {
+    //Functie om ingegeven login te testen
+    function TestLogin() {
         //REquest body
         opties.body = JSON.stringify({
             format: "json",
@@ -185,7 +230,7 @@ window.addEventListener('load', function() {
                 // test status van de response        
                 if (responseData.status < 200 || responseData.status > 299) {
                     // login faalde, boodschap weergeven                  
-                    MaakRegisterLink();                   
+                    MaakRegisterLink();
                     // return, zodat de rest van de fetch niet verder uitgevoerd wordt
                     return;
                 }
@@ -193,34 +238,42 @@ window.addEventListener('load', function() {
                 var list = responseData.data;
 
                 if (Object.keys(list).length > 0) {
-                   
-                   //Hier wilt zeggen dat de user bestaat, close de login
-                    loginScreen.close();
-                } 
 
-                else {
-                    MaakRegisterLink();                 
+                    //Hier wilt zeggen dat de user bestaat, close de login
+                    loginScreen.close();
+                } else {
+                    MaakRegisterLink();
                 }
-            
+
             })
             .catch(function(error) {
                 // verwerk de fout
                 console.log("fout : " + error);
             });
 
+
+            //Maak een register link als login fout is
         ///////////////////////////////////////////////////////////
-        function MaakRegisterLink(){
+        function MaakRegisterLink() {
             loginMsg.innerHTML = ` Login mislukt : deze naam/paswoord combinatie bestaat niet
             <a href="/form/"  id = "registerLink" class="item-content item-link">
             <div class="item-inner">
               <div class="item-title">Registreren</div>
             </div>`
 
-            document.getElementById("registerLink").addEventListener("click",function(){loginScreen.close();})
-        }    
+            document.getElementById("registerLink").addEventListener("click", function() {
+                loginScreen.close();
+            })
+        }
 
         console.log(`naam : ${username.value} password: ${password.value}`);
 
+        
+        
+    }
+
+    function MaakLogin(){
+      alert("test");
     }
 
 })
