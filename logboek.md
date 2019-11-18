@@ -35,4 +35,7 @@ Werken aan login pagina van project: 7uur (Probleem met cors --> server blokeerd
 
 Week8: 
 
+meeting met groepsgenoot : 2uur
 Werken aan register user voor project : 3uur
+Aanpassen api : 1.5uur
+Documenteren code : 0.5 uur

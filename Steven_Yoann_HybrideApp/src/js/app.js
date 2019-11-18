@@ -46,7 +46,7 @@ var app = new Framework7({
     // App root methods
     methods: {
         helloWorld: function() {
-            app.dialog.alert('Hello World!');
+            alert('Hello World!');
         },
     },
     // App routes
@@ -71,51 +71,93 @@ var app = new Framework7({
                 cordovaApp.init(f7);
             }
         },
-        
+
         //Bij het laden van de formpage wordt deze code uitevoerd
         //Registreer user
 
-        //TODO: moet nog controleren of user al bestaat
-        pageAfterIn: function (FormPage) {
-          
-         document.getElementById("btnRegister").addEventListener("click",function(){
-        
-          let username = document.getElementById("registerNaam");
-          let password = document.getElementById("registerPassword");
-         
-          opties.body = JSON.stringify({
-            format: "json",
-            table: "user",
-            bewerking: "register",
-            username: username.value,
-            password: password.value,
-        });
 
-        //Doe een fetch
-        fetch(url, opties)
-            .then(function(response) {
-                return response;
-            })
-            .then(function(responseData) {
-                // test status van de response  
-                      
-                if (responseData.status < 200 || responseData.status > 299) {
-                    // login faalde, boodschap weergeven                  
-                    alert("fout");
-                    // return, zodat de rest van de fetch niet verder uitgevoerd wordt
-                    return;
-                }  
-                alert(`user ${username.value} is succesvol aangemaakt`) 
-                //TODO: Hier moet nog navigatie naar homescherm komen             
-            })
-            .catch(function(error) {
-                // verwerk de fout
-                console.log("fout : " + error);
-            });
+        pageAfterIn: function(FormPage) {
 
-         })        
+            let username = document.getElementById("registerNaam");
+            let password = document.getElementById("registerPassword");
+
+
+            //Maak event listner aan van de register button 
+            document.getElementById("btnRegister").addEventListener("click", function() {
+             
+                maakRequestBody("login");
+
+                fetch(url, opties)
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function(responseData) {
+                        // test status van de response        
+                        if (responseData.status < 200 || responseData.status > 299) {
+                            // login faalde, boodschap weergeven                  
+                            console.log("api error");
+                            // return, zodat de rest van de fetch niet verder uitgevoerd wordt
+                            return;
+                        }
+
+
+                        // de verwerking van de data
+                        var list = responseData.data;
+
+                        if (Object.keys(list).length > 0) {
+                            //Hier wilt zeggen dat de user bestaat, close de login
+                            console.log("user bestaat");
+                            alert("gelive een andere username in te geven , deze bestaat al");
+                            
+                        } else {
+                            console.log("user bestaat niet");
+                            //Roep api op met bewerking register
+                            maakRequestBody("register");
+                            //Doe een fetch
+                            fetch(url, opties)
+                                .then(function(response) {
+                                    return response;
+                                })
+                                .then(function(responseData) {
+                                    // test status van de response  
+
+                                    if (responseData.status < 200 || responseData.status > 299) {
+                                        // Register faalde, boodschap weergeven                  
+                                        alert("fout");
+                                        // return, zodat de rest van de fetch niet verder uitgevoerd wordt
+                                        return;
+                                    }
+                                    alert(`user ${username.value} is succesvol aangemaakt`)
+                                    //TODO: Hier moet nog navigatie naar homescherm komen             
+                                })
+                                .catch(function(error) {
+                                    // verwerk de fout
+                                    console.log("fout : " + error);
+                                });
+                                
+                                //TODO: navigate naar homescherm
+                        }
+                    })
+                    .catch(function(error) {
+                        // verwerk de fout                        
+                        console.log("fout : " + error);
+                    });
+            })
+
+            //Functie om requestbody aan te maken voor de fetch.
+            //Deze functie geeft als parameter de bewerking mee.
+            function maakRequestBody(parBewerking) {
+                opties.body = JSON.stringify({
+                    format: "json",
+                    table: "user",
+                    bewerking: parBewerking,
+                    username: username.value,
+                    password: password.value,
+                });
+            }
+
         },
-  /////////////////////////////////////////    
+        /////////////////////////////////////////    
     },
 });
 
@@ -189,7 +231,8 @@ window.addEventListener('load', function() {
     //Open het gemaakte loginScreen
     loginScreen.open();
 
-    //Haal waarden uit het formulier
+
+    //Haal waarden uit het formulier en steek in variabele
     let username = this.document.getElementById("username");
     let password = this.document.getElementById("password");
     let loginMsg = this.document.getElementById("loginMsg");
@@ -205,18 +248,22 @@ window.addEventListener('load', function() {
             return;
         }
 
+        //Functie oproepen voor api login
         TestLogin();
 
+        //Bij login neem username over om deze als tittel te zetten
         document.getElementById("titelHome").innerHTML = `Welkom ${username.value}`;
     })
 
-    //Functie om ingegeven login te testen
+    //Functie om ingegeven login te testen, doet een get naar de databank
     function TestLogin() {
+        console.log("testLoginFunctie");
         //REquest body
+
         opties.body = JSON.stringify({
             format: "json",
             table: "user",
-            bewerking: "get",
+            bewerking: "login",
             username: username.value,
             password: password.value,
         });
@@ -252,7 +299,7 @@ window.addEventListener('load', function() {
             });
 
 
-            //Maak een register link als login fout is
+        //Maak een register link als login fout is
         ///////////////////////////////////////////////////////////
         function MaakRegisterLink() {
             loginMsg.innerHTML = ` Login mislukt : deze naam/paswoord combinatie bestaat niet
@@ -267,13 +314,6 @@ window.addEventListener('load', function() {
         }
 
         console.log(`naam : ${username.value} password: ${password.value}`);
-
-        
-        
-    }
-
-    function MaakLogin(){
-      alert("test");
     }
 
 })
