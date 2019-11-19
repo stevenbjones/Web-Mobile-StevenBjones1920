@@ -41,3 +41,8 @@ Aanpassen api : 1.5uur
 Documenteren code : 0.5 uur
 
 week9: 
+
+Debuggen probleem met registratie user : 1uur
+Dubbele naam voorkomen bij registreren user : 0,5uur
+Aanmaken projecten en verwerken : 1,5uur
+Les: ,,,
