@@ -64,6 +64,9 @@ var app = new Framework7({
         androidOverlaysWebView: false,
     },
     on: {
+
+
+
         init: function() {
             var f7 = this;
             if (f7.device.cordova) {
@@ -84,8 +87,8 @@ var app = new Framework7({
 
             //Maak event listner aan van de register button 
             document.getElementById("btnRegister").addEventListener("click", function() {
-             
-                maakRequestBody("login");
+
+                maakRequestBody("validatieLogin");
 
                 fetch(url, opties)
                     .then(function(response) {
@@ -100,15 +103,15 @@ var app = new Framework7({
                             return;
                         }
 
-
                         // de verwerking van de data
                         var list = responseData.data;
+                        console.log(list);
 
                         if (Object.keys(list).length > 0) {
                             //Hier wilt zeggen dat de user bestaat, close de login
                             console.log("user bestaat");
                             alert("gelive een andere username in te geven , deze bestaat al");
-                            
+
                         } else {
                             console.log("user bestaat niet");
                             //Roep api op met bewerking register
@@ -134,8 +137,8 @@ var app = new Framework7({
                                     // verwerk de fout
                                     console.log("fout : " + error);
                                 });
-                                
-                                //TODO: navigate naar homescherm
+
+                            //TODO: navigate naar homescherm
                         }
                     })
                     .catch(function(error) {
@@ -157,6 +160,10 @@ var app = new Framework7({
             }
 
         },
+
+
+
+
         /////////////////////////////////////////    
     },
 });
@@ -236,7 +243,10 @@ window.addEventListener('load', function() {
     let username = this.document.getElementById("username");
     let password = this.document.getElementById("password");
     let loginMsg = this.document.getElementById("loginMsg");
-
+    
+  
+    let projectname = this.document.getElementById("projectName");
+    
     //Event listner voor de login button
     this.document.getElementById("btnLogin").addEventListener("click", function() {
 
@@ -255,21 +265,6 @@ window.addEventListener('load', function() {
         document.getElementById("titelHome").innerHTML = `Welkom ${username.value}`;
     })
 
-
-        //Haal waarden uit het formulier en steek in variabele
-        let projectname = this.document.getElementById("projectName");
-   
-        //Event listner voor de maak aan button
-        this.document.getElementById("btnMakeProject").addEventListener("click", function() {
-    
-            if (projectname.value == "") {
-                console.log("Leeg project naam");
-                console.log(`naam : ${projectname.value}`);
-    
-                loginMsg.innerHTML = "username of password mag niet leeg zijn";
-                return;
-            }
-        })
 
     //Functie om ingegeven login te testen, doet een get naar de databank
     function TestLogin() {
@@ -333,4 +328,47 @@ window.addEventListener('load', function() {
     }
 
 
+
+    //Event listner voor de maak project button
+    this.document.getElementById("btnMakeProject").addEventListener("click", function() {
+
+        if (projectname.value == "") {
+            alert("gelieve iets in te tikken")
+            console.log(`naam : ${projectname.value}`);
+            return;
+        }
+
+        console.log(projectname.value);
+        opties.body = JSON.stringify({
+            format: "json",
+            table: "project",
+            bewerking: "registerProject",
+            projectname: projectname.value,       
+        });
+
+        //Doe een fetch
+        fetch(url, opties)
+            .then(function(response) {
+                return response;
+            })
+            .then(function(responseData) {
+                // test status van de response  
+
+                if (responseData.status < 200 || responseData.status > 299) {
+                    // Register faalde, boodschap weergeven                  
+                    alert("fout");
+                    // return, zodat de rest van de fetch niet verder uitgevoerd wordt
+                    return;
+                }
+                alert(`project ${projectname.value} is succesvol aangemaakt`)
+                //TODO: Hier moet nog navigatie naar homescherm komen             
+            })
+            .catch(function(error) {
+                // verwerk de fout
+                console.log("fout : " + error);
+            });
+
+        //TODO: navigate naar homescherm
+
+    })
 })
