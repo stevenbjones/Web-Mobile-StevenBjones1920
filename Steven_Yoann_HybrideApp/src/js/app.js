@@ -251,9 +251,25 @@ window.addEventListener('load', function() {
         //Functie oproepen voor api login
         TestLogin();
 
-        //Bij login neem username over om deze als tittel te zetten
+        //Bij login neem project naam over om deze als tittel te zetten
         document.getElementById("titelHome").innerHTML = `Welkom ${username.value}`;
     })
+
+
+        //Haal waarden uit het formulier en steek in variabele
+        let projectname = this.document.getElementById("projectName");
+   
+        //Event listner voor de maak aan button
+        this.document.getElementById("btnMakeProject").addEventListener("click", function() {
+    
+            if (projectname.value == "") {
+                console.log("Leeg project naam");
+                console.log(`naam : ${projectname.value}`);
+    
+                loginMsg.innerHTML = "username of password mag niet leeg zijn";
+                return;
+            }
+        })
 
     //Functie om ingegeven login te testen, doet een get naar de databank
     function TestLogin() {
@@ -315,5 +331,6 @@ window.addEventListener('load', function() {
 
         console.log(`naam : ${username.value} password: ${password.value}`);
     }
+
 
 })
