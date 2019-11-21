@@ -151,8 +151,7 @@ var app = new Framework7({
             //Deze functie geeft als parameter de bewerking mee.
             function maakRequestBody(parBewerking) {
                 opties.body = JSON.stringify({
-                    format: "json",
-                    table: "user",
+                    format: "json",                    
                     bewerking: parBewerking,
                     username: username.value,
                     password: password.value,
@@ -169,7 +168,7 @@ var app = new Framework7({
 });
 
 //Request opties
-let opties = {
+var opties = {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     mode: "cors", // no-cors, *cors, same-origin
     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -183,9 +182,12 @@ let opties = {
 
 // url van de api
 let url = "http://stevenbjones.azurewebsites.net/php/api.php";
-
+console.log(url);
 //Maak eventListner aan voor onload pagina
 window.addEventListener('load', function() {
+
+    //Is user al ingelogd --> local storage
+    //Usernaam / bool
 
     //Maak loginscreen aan 
     let loginScreen = app.loginScreen.create({
@@ -272,8 +274,7 @@ window.addEventListener('load', function() {
         //REquest body
 
         opties.body = JSON.stringify({
-            format: "json",
-            table: "user",
+            format: "json",            
             bewerking: "login",
             username: username.value,
             password: password.value,
@@ -340,8 +341,7 @@ window.addEventListener('load', function() {
 
         console.log(projectname.value);
         opties.body = JSON.stringify({
-            format: "json",
-            table: "project",
+            format: "json",            
             bewerking: "registerProject",
             projectname: projectname.value,       
         });
