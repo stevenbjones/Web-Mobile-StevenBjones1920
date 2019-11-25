@@ -45,4 +45,5 @@ week9:
 Debuggen probleem met registratie user : 1uur
 Dubbele naam voorkomen bij registreren user : 0,5uur
 Aanmaken projecten en verwerken : 1,5uur
-Les: ,,,
+Les: 4uur
+Probleem fixen na feedback leerkracht over register user : 1uur

@@ -26,6 +26,7 @@ var routes = [
   {
     path: '/catalog/',
     component: CatalogPage,
+    
   },
   {
     path: '/product/:id/',

@@ -12,7 +12,8 @@ import cordovaApp from './cordova-app.js';
 // Import Routes
 import routes from './routes.js';
 
-var app = new Framework7({
+
+var app = new Framework7({    
     root: '#app', // App root element
     id: 'io.framework7.Steven_Yoann_HybrideApp', // App bundle ID
     name: 'Steven_Yoann_HybrideApp', // App name
@@ -20,6 +21,7 @@ var app = new Framework7({
     // App root data
     data: function() {
         return {
+            ingelogd: true ,
             user: {
                 firstName: 'John',
                 lastName: 'Doe',
@@ -65,8 +67,6 @@ var app = new Framework7({
     },
     on: {
 
-
-
         init: function() {
             var f7 = this;
             if (f7.device.cordova) {
@@ -81,6 +81,8 @@ var app = new Framework7({
 
         pageAfterIn: function(FormPage) {
 
+            console.log(`Dit is de globale variable : ${app.data.ingelogd}`)
+            console.log(ingelogdeUser);
             let username = document.getElementById("registerNaam");
             let password = document.getElementById("registerPassword");
 
@@ -139,6 +141,7 @@ var app = new Framework7({
                                 });
 
                             //TODO: navigate naar homescherm
+                           
                         }
                     })
                     .catch(function(error) {
@@ -160,6 +163,10 @@ var app = new Framework7({
 
         },
 
+        pageAfterOut: function(CatalogPage) { 
+            alert(ingelogdeUser);
+        },
+
 
 
 
@@ -179,6 +186,9 @@ var opties = {
     }
 };
 
+//object van de user die ingelogd is. Deze heeft de volgende properties: 
+//id,naam,passwoord
+var ingelogdeUser ;
 
 // url van de api
 let url = "http://stevenbjones.azurewebsites.net/php/api.php";
@@ -295,6 +305,9 @@ window.addEventListener('load', function() {
                 }
                 // de verwerking van de data
                 var list = responseData.data;
+                console.log(list);
+                ingelogdeUser = responseData.data[0];                
+                
 
                 if (Object.keys(list).length > 0) {
 
@@ -331,19 +344,22 @@ window.addEventListener('load', function() {
 
 
     //Event listner voor de maak project button
-    this.document.getElementById("btnMakeProject").addEventListener("click", function() {
+    this.document.getElementById("btnMakeProject").addEventListener("click", function() {     
 
         if (projectname.value == "") {
             alert("gelieve iets in te tikken")
             console.log(`naam : ${projectname.value}`);
+            console.log(ingelogdeUser["id"]);
             return;
         }
 
         console.log(projectname.value);
+        
         opties.body = JSON.stringify({
             format: "json",            
             bewerking: "registerProject",
-            projectname: projectname.value,       
+            projectname: projectname.value,
+            userID: (ingelogdeUser["id"]),                   
         });
 
         //Doe een fetch
@@ -371,4 +387,5 @@ window.addEventListener('load', function() {
         //TODO: navigate naar homescherm
 
     })
+    
 })
