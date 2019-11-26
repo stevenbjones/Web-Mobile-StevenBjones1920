@@ -13,7 +13,7 @@ import cordovaApp from './cordova-app.js';
 import routes from './routes.js';
 
 
-var app = new Framework7({    
+var app = new Framework7({
     root: '#app', // App root element
     id: 'io.framework7.Steven_Yoann_HybrideApp', // App bundle ID
     name: 'Steven_Yoann_HybrideApp', // App name
@@ -21,35 +21,17 @@ var app = new Framework7({
     // App root data
     data: function() {
         return {
-            ingelogd: false ,
-            user: {
-                firstName: 'John',
-                lastName: 'Doe',
+            ingelogd: false,
+
+            //Deze waarden gebruiken we niet meer.
+            //Later mss nog te implementeren
+            projects: {
+                id: [],
+                naam: [],
+                tijd: [],
+                usr_id: [],
             },
 
-            projects:{              
-                id:[],
-                naam:[],
-                tijd:[],
-                usr_id:[],
-            },
-            // Demo products for Catalog section
-            products: [{
-                    id: '1',
-                    title: 'Apple iPhone 8',
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi tempora similique reiciendis, error nesciunt vero, blanditiis pariatur dolor, minima sed sapiente rerum, dolorem corrupti hic modi praesentium unde saepe perspiciatis.'
-                },
-                {
-                    id: '2',
-                    title: 'Apple iPhone 8 Plus',
-                    description: 'Velit odit autem modi saepe ratione totam minus, aperiam, labore quia provident temporibus quasi est ut aliquid blanditiis beatae suscipit odio vel! Nostrum porro sunt sint eveniet maiores, dolorem itaque!'
-                },
-                {
-                    id: '3',
-                    title: 'Apple iPhone X',
-                    description: 'Expedita sequi perferendis quod illum pariatur aliquam, alias laboriosam! Vero blanditiis placeat, mollitia necessitatibus reprehenderit. Labore dolores amet quos, accusamus earum asperiores officiis assumenda optio architecto quia neque, quae eum.'
-                },
-            ]
         };
     },
     // App root methods
@@ -148,7 +130,7 @@ var app = new Framework7({
                                 });
 
                             //TODO: navigate naar homescherm
-                           
+
                         }
                     })
                     .catch(function(error) {
@@ -161,23 +143,20 @@ var app = new Framework7({
             //Deze functie geeft als parameter de bewerking mee.
             function maakRequestBody(parBewerking) {
                 opties.body = JSON.stringify({
-                    format: "json",                    
+                    format: "json",
                     bewerking: parBewerking,
                     username: username.value,
                     password: password.value,
                 });
             }
 
-           
+
 
         },
 
-        pageAfterOut: function(CatalogPage) { 
+        pageAfterOut: function(CatalogPage) {
             alert(ingelogdeUser);
         },
-
-
-
 
         /////////////////////////////////////////    
     },
@@ -199,7 +178,7 @@ var opties = {
 
 //object van de user die ingelogd is. Deze heeft de volgende properties: 
 //id,naam,passwoord
-var ingelogdeUser ;
+var ingelogdeUser;
 
 // url van de api
 let url = "http://stevenbjones.azurewebsites.net/php/api.php";
@@ -207,6 +186,7 @@ console.log(url);
 //Maak eventListner aan voor onload pagina
 window.addEventListener('load', function() {
 
+    //TODO:
     //Is user al ingelogd --> local storage
     //Usernaam / bool
 
@@ -266,10 +246,10 @@ window.addEventListener('load', function() {
     let username = this.document.getElementById("username");
     let password = this.document.getElementById("password");
     let loginMsg = this.document.getElementById("loginMsg");
-    
-  
+
+
     let projectname = this.document.getElementById("projectName");
-    
+
     //Event listner voor de login button
     this.document.getElementById("btnLogin").addEventListener("click", function() {
 
@@ -285,17 +265,17 @@ window.addEventListener('load', function() {
         TestLogin();
 
         //Bij login neem project naam over om deze als tittel te zetten
-        document.getElementById("titelHome").innerHTML = `Welkom ${username.value}`;
+        
     })
 
-
+    
     //Functie om ingegeven login te testen, doet een get naar de databank
     function TestLogin() {
         console.log("testLoginFunctie");
         //REquest body
 
         opties.body = JSON.stringify({
-            format: "json",            
+            format: "json",
             bewerking: "login",
             username: username.value,
             password: password.value,
@@ -317,13 +297,18 @@ window.addEventListener('load', function() {
                 // de verwerking van de data
                 var list = responseData.data;
                 console.log(list);
-                ingelogdeUser = responseData.data[0];                
-                
+                ingelogdeUser = responseData.data[0];
+
+            
 
                 if (Object.keys(list).length > 0) {
 
                     haalProjectVanIngelogdeUser();
                     //Hier wilt zeggen dat de user bestaat, close de login
+
+                    //Geef welkom bericht aan de user
+                    document.getElementById("titelHome").innerHTML = `Welkom ${ingelogdeUser["naam"]}`;
+                    //Sluit login scherm
                     loginScreen.close();
                 } else {
                     MaakRegisterLink();
@@ -352,44 +337,48 @@ window.addEventListener('load', function() {
 
         console.log(`naam : ${username.value} password: ${password.value}`);
     }
-        
-        //Haal projecten op met het ingelogde userID
-        function haalProjectVanIngelogdeUser(){
-             ///Data steken in applicatie voor projecten
 
-           /*************************************************** */
-           console.log(ingelogdeUser["id"]);
-           opties.body = JSON.stringify({
-               format: "json",                    
-               bewerking: "getUserProjects",
-               userID: ingelogdeUser["id"],            
-           });         
-           //Doe een fetch
-           fetch(url, opties)
-               .then(function(response) {
-                   return response.json();
-               })
-               .then(function(responseData) {
-                   // test status van de response        
-                   if (responseData.status < 200 || responseData.status > 299) {                       
-                       return;
-                   }
-                   let tlines="";
-                   // de verwerking van de data
-                   var list = responseData.data;
-                   console.log("lijst:");
-                   console.log(list[0]);                   
-                                   
+    //Haal projecten op met het ingelogde userID
+    function haalProjectVanIngelogdeUser() {
 
-                   for (let i = 0; i < list.length; i++) {
+        //request options voor fetch
+        opties.body = JSON.stringify({
+            format: "json",
+            bewerking: "getUserProjects",
+            userID: ingelogdeUser["id"],
+        });
+        //Doe een fetch
+        fetch(url, opties)
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(responseData) {
+                // test status van de response        
+                if (responseData.status < 200 || responseData.status > 299) {
+                    return;
+                }
+               
+                // de verwerking van de data
+                var list = responseData.data;
+                console.log("lijst:");
+                console.log(list[0]);
+
+                let tlines = "";
+                //Maak html objecten aan voor de data van de projecten
+                for (let i = 0; i < list.length; i++) {
                     tlines += `<div class='row'><span class='col'>${list[i].id}</span><span class='col'>${ list[i].naam}</span> <span class='col'>${ list[i].tijd}</span><span class='col'>${ list[i].usr_id}</span> <button id=btnDelete${i}> Verwijder</button> </div>`;
                 }
+                //Steek in een div van page catalog de projecten.
                 document.getElementById("pList").innerHTML = tlines;
 
-                for(let i = 0; i < list.length; i++){
-                    document.getElementById(`btnDelete${i}`).addEventListener('click', function(){DeleteProject(list[i].id)});
+                //Maak een eventListner click voor elke button. Deze button delete het project
+                for (let i = 0; i < list.length; i++) {
+                    document.getElementById(`btnDelete${i}`).addEventListener('click', function() {
+                        DeleteProject(list[i].id)
+                    });
                 }
-                   /*
+                /*
+                    //Deze code is nu niet meer nodig omdat we niet met de app data werken. Mss komt dit nog terug
                    for (i = 0; i < list.length; i++) {
                     app.data.projects["id"][i] = list[i]["id"];
                     app.data.projects["naam"][i]= list[i]["naam"];
@@ -397,51 +386,52 @@ window.addEventListener('load', function() {
                     app.data.projects["usr_id"][i]= list[i]["usr_id"];
                    }
                  */
-               })
-               .catch(function(error) {
-                   // verwerk de fout
-                   console.log("fout : " + error);
-               });
-   
+            })
+            .catch(function(error) {
+                // verwerk de fout
+                console.log("fout : " + error);
+            });
 
-               console.log("het data object :");
-               console.log(app.data.projects);
-        }
 
-   function DeleteProject(index){
+        console.log("het data object :");
+        console.log(app.data.projects);
+    }
 
-    opties.body = JSON.stringify({
-        format: "json",            
-        bewerking: "DeleteProject",        
-        projectID: index,                   
-    });
+    //Functie die aan de button wordt gegeven. Deze ontvangt de project index.
+    function DeleteProject(index) {
 
-    //Doe een fetch
-    fetch(url, opties)
-        .then(function(response) {
-            return response;
-        })
-        .then(function(responseData) {
-            // test status van de response  
-
-            if (responseData.status < 200 || responseData.status > 299) {
-                // Register faalde, boodschap weergeven                  
-                alert("fout");
-                // return, zodat de rest van de fetch niet verder uitgevoerd wordt
-                return;
-            }
-            alert(`project ${projectname.value} is succesvol gedelete`);
-             haalProjectVanIngelogdeUser();
-            //TODO: Hier moet nog navigatie naar homescherm komen             
-        })
-        .catch(function(error) {
-            // verwerk de fout
-            console.log("fout : " + error);
+        opties.body = JSON.stringify({
+            format: "json",
+            bewerking: "DeleteProject",
+            projectID: index,
         });
-   }
+
+        //Doe een fetch
+        fetch(url, opties)
+            .then(function(response) {
+                return response;
+            })
+            .then(function(responseData) {
+                // test status van de response  
+
+                if (responseData.status < 200 || responseData.status > 299) {
+                    // Register faalde, boodschap weergeven                  
+                    alert("fout");
+                    // return, zodat de rest van de fetch niet verder uitgevoerd wordt
+                    return;
+                }
+                alert(`project ${projectname.value} is succesvol gedelete`);
+                haalProjectVanIngelogdeUser();
+                //TODO: Hier moet nog navigatie naar homescherm komen             
+            })
+            .catch(function(error) {
+                // verwerk de fout
+                console.log("fout : " + error);
+            });
+    }
 
     //Event listner voor de maak project button
-    this.document.getElementById("btnMakeProject").addEventListener("click", function() {     
+    this.document.getElementById("btnMakeProject").addEventListener("click", function() {
 
         if (projectname.value == "") {
             alert("gelieve iets in te tikken")
@@ -451,12 +441,12 @@ window.addEventListener('load', function() {
         }
 
         console.log(projectname.value);
-        
+
         opties.body = JSON.stringify({
-            format: "json",            
+            format: "json",
             bewerking: "registerProject",
             projectname: projectname.value,
-            userID: (ingelogdeUser["id"]),                   
+            userID: (ingelogdeUser["id"]),
         });
 
         //Doe een fetch
@@ -474,7 +464,7 @@ window.addEventListener('load', function() {
                     return;
                 }
                 alert(`project ${projectname.value} is succesvol aangemaakt`);
-                 haalProjectVanIngelogdeUser();
+                haalProjectVanIngelogdeUser();
                 //TODO: Hier moet nog navigatie naar homescherm komen             
             })
             .catch(function(error) {
@@ -486,6 +476,4 @@ window.addEventListener('load', function() {
 
     })
 
-
-    
 })
