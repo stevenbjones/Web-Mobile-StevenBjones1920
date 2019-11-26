@@ -3,10 +3,11 @@
     <div class="navbar">
       <div class="navbar-bg"></div>
       <div class="navbar-inner sliding">
-        <div class="title">Catalog</div>
+        <div class="title" :title = "products.id">Catalog</div>
       </div>
     </div>
     <div class="page-content">
+        <div id="pList" class="content-block-inner"> text</div>
       <div class="list links-list">
         <ul>
           {{#each products}}
@@ -16,6 +17,8 @@
       </div>
     </div>
   </div>
+  
+  
 </template>
 <script>
    export default {

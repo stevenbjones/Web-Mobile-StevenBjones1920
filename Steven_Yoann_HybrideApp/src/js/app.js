@@ -374,19 +374,29 @@ window.addEventListener('load', function() {
                    if (responseData.status < 200 || responseData.status > 299) {                       
                        return;
                    }
+                   let tlines="";
                    // de verwerking van de data
                    var list = responseData.data;
                    console.log("lijst:");
                    console.log(list[0]);                   
-                   
-                   var i;
+                                   
+
+                   for (let i = 0; i < list.length; i++) {
+                    tlines += `<div class='row'><span class='col'>${list[i].id}</span><span class='col'>${ list[i].naam}</span> <span class='col'>${ list[i].tijd}</span><span class='col'>${ list[i].usr_id}</span> <button id=btnDelete${i}> Verwijder</button> </div>`;
+                }
+                document.getElementById("pList").innerHTML = tlines;
+
+                for(let i = 0; i < list.length; i++){
+                    document.getElementById(`btnDelete${i}`).addEventListener('click', function(){DeleteProject(list[i].id)});
+                }
+                   /*
                    for (i = 0; i < list.length; i++) {
                     app.data.projects["id"][i] = list[i]["id"];
                     app.data.projects["naam"][i]= list[i]["naam"];
                     app.data.projects["tijd"][i]= list[i]["tijd"];
                     app.data.projects["usr_id"][i]= list[i]["usr_id"];
                    }
-                 
+                 */
                })
                .catch(function(error) {
                    // verwerk de fout
@@ -397,6 +407,38 @@ window.addEventListener('load', function() {
                console.log("het data object :");
                console.log(app.data.projects);
         }
+
+   function DeleteProject(index){
+
+    opties.body = JSON.stringify({
+        format: "json",            
+        bewerking: "DeleteProject",        
+        projectID: index,                   
+    });
+
+    //Doe een fetch
+    fetch(url, opties)
+        .then(function(response) {
+            return response;
+        })
+        .then(function(responseData) {
+            // test status van de response  
+
+            if (responseData.status < 200 || responseData.status > 299) {
+                // Register faalde, boodschap weergeven                  
+                alert("fout");
+                // return, zodat de rest van de fetch niet verder uitgevoerd wordt
+                return;
+            }
+            alert(`project ${projectname.value} is succesvol gedelete`);
+             haalProjectVanIngelogdeUser();
+            //TODO: Hier moet nog navigatie naar homescherm komen             
+        })
+        .catch(function(error) {
+            // verwerk de fout
+            console.log("fout : " + error);
+        });
+   }
 
     //Event listner voor de maak project button
     this.document.getElementById("btnMakeProject").addEventListener("click", function() {     
@@ -431,7 +473,8 @@ window.addEventListener('load', function() {
                     // return, zodat de rest van de fetch niet verder uitgevoerd wordt
                     return;
                 }
-                alert(`project ${projectname.value} is succesvol aangemaakt`)
+                alert(`project ${projectname.value} is succesvol aangemaakt`);
+                 haalProjectVanIngelogdeUser();
                 //TODO: Hier moet nog navigatie naar homescherm komen             
             })
             .catch(function(error) {
@@ -442,5 +485,7 @@ window.addEventListener('load', function() {
         //TODO: navigate naar homescherm
 
     })
+
+
     
 })
