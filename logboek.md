@@ -52,4 +52,5 @@ week10:
 
 Projecten laten zien op het scherm: 3uur
 Projecten kunnen verwijderen : 1uur
+Documenteren code: 0.5 uur
 Onthouden ingelogde user : 
