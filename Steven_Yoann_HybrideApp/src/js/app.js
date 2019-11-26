@@ -21,10 +21,17 @@ var app = new Framework7({
     // App root data
     data: function() {
         return {
-            ingelogd: true ,
+            ingelogd: false ,
             user: {
                 firstName: 'John',
                 lastName: 'Doe',
+            },
+
+            projects:{              
+                id:[],
+                naam:[],
+                tijd:[],
+                usr_id:[],
             },
             // Demo products for Catalog section
             products: [{
@@ -161,6 +168,8 @@ var app = new Framework7({
                 });
             }
 
+           
+
         },
 
         pageAfterOut: function(CatalogPage) { 
@@ -173,6 +182,8 @@ var app = new Framework7({
         /////////////////////////////////////////    
     },
 });
+
+
 
 //Request opties
 var opties = {
@@ -311,6 +322,7 @@ window.addEventListener('load', function() {
 
                 if (Object.keys(list).length > 0) {
 
+                    haalProjectVanIngelogdeUser();
                     //Hier wilt zeggen dat de user bestaat, close de login
                     loginScreen.close();
                 } else {
@@ -340,8 +352,51 @@ window.addEventListener('load', function() {
 
         console.log(`naam : ${username.value} password: ${password.value}`);
     }
+        
+        //Haal projecten op met het ingelogde userID
+        function haalProjectVanIngelogdeUser(){
+             ///Data steken in applicatie voor projecten
 
+           /*************************************************** */
+           console.log(ingelogdeUser["id"]);
+           opties.body = JSON.stringify({
+               format: "json",                    
+               bewerking: "getUserProjects",
+               userID: ingelogdeUser["id"],            
+           });         
+           //Doe een fetch
+           fetch(url, opties)
+               .then(function(response) {
+                   return response.json();
+               })
+               .then(function(responseData) {
+                   // test status van de response        
+                   if (responseData.status < 200 || responseData.status > 299) {                       
+                       return;
+                   }
+                   // de verwerking van de data
+                   var list = responseData.data;
+                   console.log("lijst:");
+                   console.log(list[0]);                   
+                   
+                   var i;
+                   for (i = 0; i < list.length; i++) {
+                    app.data.projects["id"][i] = list[i]["id"];
+                    app.data.projects["naam"][i]= list[i]["naam"];
+                    app.data.projects["tijd"][i]= list[i]["tijd"];
+                    app.data.projects["usr_id"][i]= list[i]["usr_id"];
+                   }
+                 
+               })
+               .catch(function(error) {
+                   // verwerk de fout
+                   console.log("fout : " + error);
+               });
+   
 
+               console.log("het data object :");
+               console.log(app.data.projects);
+        }
 
     //Event listner voor de maak project button
     this.document.getElementById("btnMakeProject").addEventListener("click", function() {     
