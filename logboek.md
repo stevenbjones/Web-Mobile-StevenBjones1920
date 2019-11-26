@@ -25,7 +25,7 @@ Oefenen met cordova project: 5uur
 Oefenen php: 2uur
 Werken aan api: 1uur
 
-Week7: 13h
+Week7: 13uur
 
 Oefenen op php form : 0.5 uur
 oefenen api: 5uur
@@ -40,10 +40,14 @@ Werken aan register user voor project : 3uur
 Aanpassen api : 1.5uur
 Documenteren code : 0.5 uur
 
-week9: 
+week9: 7uur
 
 Debuggen probleem met registratie user : 1uur
 Dubbele naam voorkomen bij registreren user : 0,5uur
 Aanmaken projecten en verwerken : 1,5uur
 Les: 4uur
 Probleem fixen na feedback leerkracht over register user : 1uur
+
+week10: 
+
+Onthouden ingelogde user : 
