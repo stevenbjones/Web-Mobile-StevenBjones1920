@@ -366,7 +366,7 @@ window.addEventListener('load', function() {
                 let tlines = "";
                 //Maak html objecten aan voor de data van de projecten
                 for (let i = 0; i < list.length; i++) {
-                    tlines += `<div class='row'><span class='col'>${list[i].id}</span><span class='col'>${ list[i].naam}</span> <span class='col'>${ list[i].tijd}</span><span class='col'>${ list[i].usr_id}</span> <button id=btnDelete${i}> Verwijder</button> </div>`;
+                    tlines += `<div class='row'><span class='col'>${list[i].id}</span><span class='col'>${ list[i].naam}</span> <span class='col'>${ list[i].tijd}</span><span class='col'>${ list[i].usr_id}</span> <button id=btnDelete${i}> Verwijder</button> <button id=btnStartStop${i}> start-stop</button> </div>`;
                 }
                 //Steek in een div van page catalog de projecten.
                 document.getElementById("pList").innerHTML = tlines;
@@ -376,6 +376,11 @@ window.addEventListener('load', function() {
                     document.getElementById(`btnDelete${i}`).addEventListener('click', function() {
                         DeleteProject(list[i].id)
                     });
+
+                    document.getElementById(`btnStartStop${i}`).addEventListener('click', function() {
+                        StartStopProject(list[i].id)
+                    })
+                   
                 }
                 /*
                     //Deze code is nu niet meer nodig omdat we niet met de app data werken. Mss komt dit nog terug
@@ -429,6 +434,45 @@ window.addEventListener('load', function() {
                 console.log("fout : " + error);
             });
     }
+
+    //Star stop functie
+
+    let startTijd;
+    let eindTijd;
+    function StartStopProject(index) {
+
+        opties.body = JSON.stringify({
+            format: "json",
+            bewerking: "getServerTime",
+            projectID: index,
+        });
+
+        //Doe een fetch
+        fetch(url, opties)
+            .then(function(response) {
+                return response;
+            })
+            .then(function(responseData) {
+                // test status van de response  
+
+                if (responseData.status < 200 || responseData.status > 299) {
+                    // Register faalde, boodschap weergeven                  
+                    alert("fout");
+                    // return, zodat de rest van de fetch niet verder uitgevoerd wordt
+                    return;
+                }
+               startTijd = responseData.data;
+               alert(startTijd);
+                           
+            })
+            .catch(function(error) {
+                // verwerk de fout
+                console.log("fout : " + error);
+            });
+    }
+
+
+
 
     //Event listner voor de maak project button
     this.document.getElementById("btnMakeProject").addEventListener("click", function() {
