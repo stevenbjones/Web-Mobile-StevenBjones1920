@@ -67,7 +67,12 @@ var app = new Framework7({
         //Bij het laden van de formpage wordt deze code uitevoerd
         //Registreer user
 
-
+        pageBeforeIn: function(page){
+            if(page.route.name!=="home"){
+                //Controle of user ingelogd is --> zo niet  redirect naar home
+                
+            }
+        },
         pageAfterIn: function(FormPage) {
 
             console.log(`Dit is de globale variable : ${app.data.ingelogd}`)
@@ -101,6 +106,7 @@ var app = new Framework7({
                         if (Object.keys(list).length > 0) {
                             //Hier wilt zeggen dat de user bestaat, close de login
                             console.log("user bestaat");
+                            console.log(responseData);
                             alert("gelive een andere username in te geven , deze bestaat al");
 
                         } else {
@@ -435,6 +441,10 @@ window.addEventListener('load', function() {
             });
     }
 
+
+
+
+
     //Star stop functie
 
     let startTijd;
@@ -443,14 +453,14 @@ window.addEventListener('load', function() {
 
         opties.body = JSON.stringify({
             format: "json",
-            bewerking: "getServerTime",
+            bewerking: "getTime",
             projectID: index,
         });
 
         //Doe een fetch
         fetch(url, opties)
             .then(function(response) {
-                return response;
+                return response.json();
             })
             .then(function(responseData) {
                 // test status van de response  
@@ -458,11 +468,15 @@ window.addEventListener('load', function() {
                 if (responseData.status < 200 || responseData.status > 299) {
                     // Register faalde, boodschap weergeven                  
                     alert("fout");
+                    console.log(responseData);                    
                     // return, zodat de rest van de fetch niet verder uitgevoerd wordt
                     return;
                 }
-               startTijd = responseData.data;
-               alert(startTijd);
+              
+            console.log(`response : ${responseData}`); 
+            console.log(`data : ${responseData.data}`);
+               
+             
                            
             })
             .catch(function(error) {
