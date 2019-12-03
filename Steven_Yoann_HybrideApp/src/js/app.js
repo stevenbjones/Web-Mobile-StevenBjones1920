@@ -67,18 +67,30 @@ var app = new Framework7({
         //Bij het laden van de formpage wordt deze code uitevoerd
         //Registreer user
 
+        // Deze functie werkt niet 
         pageBeforeIn: function(page){
             if(page.route.name!=="home"){
-                console.log("test");
+                console.log("Nu niet op home");
                 //Controle of user ingelogd is --> zo niet  redirect naar home
                 if(ingelogdeUser == null){
-                    location.reload();
+                    //location.reload();
                    // app.router.navigate(app.views.main.router.url,{reloadCurrent: true});
                  
                 }
                 
             }
-            
+
+            if(page.route.name=="form" ){
+                console.log("Nu op register");
+                //Controle of user ingelogd is --> zo niet  redirect naar home
+                if(ingelogdeUser == null){
+                    //location.reload();
+                   // app.router.navigate(app.views.main.router.url,{reloadCurrent: true});
+                 
+                }
+                
+            }
+
         },
         pageAfterIn: function(FormPage) {
 
@@ -376,10 +388,11 @@ window.addEventListener('load', function() {
                 console.log("lijst:");
                 console.log(list[0]);
 
-                let tlines = "";
+                let tlines = "<table>";
+                tlines += `<tr> <th>ID</th><th>Project Naam</th><th>Tijd</th><th>User ID</th></tr>`
                 //Maak html objecten aan voor de data van de projecten
                 for (let i = 0; i < list.length; i++) {
-                    tlines += `<div class='row'><span class='col'>${list[i].id}</span><span class='col'>${ list[i].naam}</span> <span class='col'>${ list[i].tijd}</span><span class='col'>${ list[i].usr_id}</span> <button id=btnDelete${i}> Verwijder</button> <button id=btnStartStop${i}> start-stop</button> </div>`;
+                    tlines += `<tr> <td>${list[i].id}</td> <td>${ list[i].naam}</td> <td>${ list[i].tijd}</td><td>${ list[i].usr_id}</td> <td><button id=btnDelete${i}> Verwijder</button></td> <td><button id=btnStartStop${i}> start-stop</button></td> </tr>`;
                 }
                 //Steek in een div van page catalog de projecten.
                 document.getElementById("pList").innerHTML = tlines;
