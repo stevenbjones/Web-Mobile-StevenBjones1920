@@ -69,9 +69,16 @@ var app = new Framework7({
 
         pageBeforeIn: function(page){
             if(page.route.name!=="home"){
+                console.log("test");
                 //Controle of user ingelogd is --> zo niet  redirect naar home
+                if(ingelogdeUser == null){
+                    location.reload();
+                   // app.router.navigate(app.views.main.router.url,{reloadCurrent: true});
+                 
+                }
                 
             }
+            
         },
         pageAfterIn: function(FormPage) {
 
