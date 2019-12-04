@@ -72,9 +72,8 @@ var app = new Framework7({
                 console.log("test");
                 //Controle of user ingelogd is --> zo niet  redirect naar home
                 if(ingelogdeUser == null){
-                    location.reload();
-                   // app.router.navigate(app.views.main.router.url,{reloadCurrent: true});
-                 
+                    console.log("niet op home");
+                    location.reload();                 
                 }
                 
             }
@@ -447,10 +446,6 @@ window.addEventListener('load', function() {
                 console.log("fout : " + error);
             });
     }
-
-
-
-
 
     //Star stop functie
 
