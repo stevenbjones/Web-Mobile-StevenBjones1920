@@ -13,13 +13,19 @@ import cordovaApp from './cordova-app.js';
 import routes from './routes.js';
 
 
+var ingelogdeUser = null;
+
+// url van de api
+var url = "http://stevenbjones.azurewebsites.net/php/api.php";
+var loginScreen;
+
 var app = new Framework7({
     root: '#app', // App root element
     id: 'io.framework7.Steven_Yoann_HybrideApp', // App bundle ID
     name: 'Steven_Yoann_HybrideApp', // App name
     theme: 'auto', // Automatic theme detection
     // App root data
-    data: function() {
+    data: function () {
         return {
             ingelogd: false,
 
@@ -31,12 +37,13 @@ var app = new Framework7({
                 tijd: [],
                 usr_id: [],
             },
+            ingelogdeUser:{}
 
         };
     },
     // App root methods
     methods: {
-        helloWorld: function() {
+        helloWorld: function () {
             alert('Hello World!');
         },
     },
@@ -56,7 +63,7 @@ var app = new Framework7({
     },
     on: {
 
-        init: function() {
+        init: function () {
             var f7 = this;
             if (f7.device.cordova) {
                 // Init cordova APIs (see cordova-app.js)
@@ -68,31 +75,27 @@ var app = new Framework7({
         //Registreer user
 
         // Deze functie werkt niet 
-        pageBeforeIn: function(page){
-            if(page.route.name!=="home"){
-                console.log("Nu niet op home");
+        pageBeforeIn: function (page) {
+            if (page.route.name == "home") {
+
+            }
+            console.log(page.route.name);
+            if (!page.route.name || page.route.name !== "home") {
+                console.log(page.route.name);
                 //Controle of user ingelogd is --> zo niet  redirect naar home
-                if(ingelogdeUser == null){
-                    //location.reload();
-                   // app.router.navigate(app.views.main.router.url,{reloadCurrent: true});
-                 
+                if (ingelogdeUser == null) {
+                    app.router.navigate(app.views.main.router.url, {
+                        reloadCurrent: true
+                    });
+                    location.reload();
+
                 }
-                
+
             }
 
-            if(page.route.name=="form" ){
-                console.log("Nu op register");
-                //Controle of user ingelogd is --> zo niet  redirect naar home
-                if(ingelogdeUser == null){
-                    //location.reload();
-                   // app.router.navigate(app.views.main.router.url,{reloadCurrent: true});
-                 
-                }
-                
-            }
 
         },
-        pageAfterIn: function(FormPage) {
+        pageAfterIn: function (FormPage) {
 
             console.log(`Dit is de globale variable : ${app.data.ingelogd}`)
             console.log(ingelogdeUser);
@@ -101,15 +104,15 @@ var app = new Framework7({
 
 
             //Maak event listner aan van de register button 
-            document.getElementById("btnRegister").addEventListener("click", function() {
+            document.getElementById("btnRegister").addEventListener("click", function () {
 
                 maakRequestBody("validatieLogin");
 
                 fetch(url, opties)
-                    .then(function(response) {
+                    .then(function (response) {
                         return response.json();
                     })
-                    .then(function(responseData) {
+                    .then(function (responseData) {
                         // test status van de response        
                         if (responseData.status < 200 || responseData.status > 299) {
                             // login faalde, boodschap weergeven                  
@@ -134,10 +137,10 @@ var app = new Framework7({
                             maakRequestBody("register");
                             //Doe een fetch
                             fetch(url, opties)
-                                .then(function(response) {
+                                .then(function (response) {
                                     return response;
                                 })
-                                .then(function(responseData) {
+                                .then(function (responseData) {
                                     // test status van de response  
 
                                     if (responseData.status < 200 || responseData.status > 299) {
@@ -149,7 +152,7 @@ var app = new Framework7({
                                     alert(`user ${username.value} is succesvol aangemaakt`)
                                     //TODO: Hier moet nog navigatie naar homescherm komen             
                                 })
-                                .catch(function(error) {
+                                .catch(function (error) {
                                     // verwerk de fout
                                     console.log("fout : " + error);
                                 });
@@ -158,7 +161,7 @@ var app = new Framework7({
 
                         }
                     })
-                    .catch(function(error) {
+                    .catch(function (error) {
                         // verwerk de fout                        
                         console.log("fout : " + error);
                     });
@@ -179,7 +182,7 @@ var app = new Framework7({
 
         },
 
-        pageAfterOut: function(CatalogPage) {
+        pageAfterOut: function (CatalogPage) {
             alert(ingelogdeUser);
         },
 
@@ -201,22 +204,17 @@ var opties = {
     }
 };
 
-//object van de user die ingelogd is. Deze heeft de volgende properties: 
-//id,naam,passwoord
-var ingelogdeUser;
 
-// url van de api
-let url = "http://stevenbjones.azurewebsites.net/php/api.php";
 console.log(url);
 //Maak eventListner aan voor onload pagina
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
 
     //TODO:
     //Is user al ingelogd --> local storage
     //Usernaam / bool
 
     //Maak loginscreen aan 
-    let loginScreen = app.loginScreen.create({
+    loginScreen = app.loginScreen.create({
         content: `
     <div class="login-screen" id="my-login-screen">
       <div class="view">
@@ -257,7 +255,7 @@ window.addEventListener('load', function() {
     </div>
     `,
         on: {
-            opened: function() {
+            opened: function () {
                 console.log('Login Screen opened')
             }
         }
@@ -276,7 +274,7 @@ window.addEventListener('load', function() {
     let projectname = this.document.getElementById("projectName");
 
     //Event listner voor de login button
-    this.document.getElementById("btnLogin").addEventListener("click", function() {
+    this.document.getElementById("btnLogin").addEventListener("click", function () {
 
         if (username.value == "" || password.value == "") {
             console.log("Leeg username of leeg password");
@@ -290,10 +288,10 @@ window.addEventListener('load', function() {
         TestLogin();
 
         //Bij login neem project naam over om deze als tittel te zetten
-        
+
     })
 
-    
+
     //Functie om ingegeven login te testen, doet een get naar de databank
     function TestLogin() {
         console.log("testLoginFunctie");
@@ -308,10 +306,10 @@ window.addEventListener('load', function() {
 
         //Doe een fetch
         fetch(url, opties)
-            .then(function(response) {
+            .then(function (response) {
                 return response.json();
             })
-            .then(function(responseData) {
+            .then(function (responseData) {
                 // test status van de response        
                 if (responseData.status < 200 || responseData.status > 299) {
                     // login faalde, boodschap weergeven                  
@@ -324,7 +322,7 @@ window.addEventListener('load', function() {
                 console.log(list);
                 ingelogdeUser = responseData.data[0];
 
-            
+
 
                 if (Object.keys(list).length > 0) {
 
@@ -340,7 +338,7 @@ window.addEventListener('load', function() {
                 }
 
             })
-            .catch(function(error) {
+            .catch(function (error) {
                 // verwerk de fout
                 console.log("fout : " + error);
             });
@@ -355,7 +353,7 @@ window.addEventListener('load', function() {
               <div class="item-title">Registreren</div>
             </div>`
 
-            document.getElementById("registerLink").addEventListener("click", function() {
+            document.getElementById("registerLink").addEventListener("click", function () {
                 loginScreen.close();
             })
         }
@@ -374,15 +372,15 @@ window.addEventListener('load', function() {
         });
         //Doe een fetch
         fetch(url, opties)
-            .then(function(response) {
+            .then(function (response) {
                 return response.json();
             })
-            .then(function(responseData) {
+            .then(function (responseData) {
                 // test status van de response        
                 if (responseData.status < 200 || responseData.status > 299) {
                     return;
                 }
-               
+
                 // de verwerking van de data
                 var list = responseData.data;
                 console.log("lijst:");
@@ -399,14 +397,14 @@ window.addEventListener('load', function() {
 
                 //Maak een eventListner click voor elke button. Deze button delete het project
                 for (let i = 0; i < list.length; i++) {
-                    document.getElementById(`btnDelete${i}`).addEventListener('click', function() {
+                    document.getElementById(`btnDelete${i}`).addEventListener('click', function () {
                         DeleteProject(list[i].id)
                     });
 
-                    document.getElementById(`btnStartStop${i}`).addEventListener('click', function() {
+                    document.getElementById(`btnStartStop${i}`).addEventListener('click', function () {
                         StartStopProject(list[i].id)
                     })
-                   
+
                 }
                 /*
                     //Deze code is nu niet meer nodig omdat we niet met de app data werken. Mss komt dit nog terug
@@ -418,7 +416,7 @@ window.addEventListener('load', function() {
                    }
                  */
             })
-            .catch(function(error) {
+            .catch(function (error) {
                 // verwerk de fout
                 console.log("fout : " + error);
             });
@@ -439,10 +437,10 @@ window.addEventListener('load', function() {
 
         //Doe een fetch
         fetch(url, opties)
-            .then(function(response) {
+            .then(function (response) {
                 return response;
             })
-            .then(function(responseData) {
+            .then(function (responseData) {
                 // test status van de response  
 
                 if (responseData.status < 200 || responseData.status > 299) {
@@ -455,57 +453,31 @@ window.addEventListener('load', function() {
                 haalProjectVanIngelogdeUser();
                 //TODO: Hier moet nog navigatie naar homescherm komen             
             })
-            .catch(function(error) {
+            .catch(function (error) {
                 // verwerk de fout
                 console.log("fout : " + error);
             });
     }
 
-    //Star stop functie
+    //Start stop functie
 
-    let startTijd;
+    let start = false;
     let eindTijd;
+    var tijd = 0;
+
     function StartStopProject(index) {
 
-        opties.body = JSON.stringify({
-            format: "json",
-            bewerking: "getTime",
-            projectID: index,
-        });
+        Math.floor(Date.now() / 1000);
 
-        //Doe een fetch
-        fetch(url, opties)
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(responseData) {
-                // test status van de response  
-
-                if (responseData.status < 200 || responseData.status > 299) {
-                    // Register faalde, boodschap weergeven                  
-                    alert("fout");
-                    console.log(responseData);                    
-                    // return, zodat de rest van de fetch niet verder uitgevoerd wordt
-                    return;
-                }
-              
-            console.log(`response : ${responseData}`); 
-            console.log(`data : ${responseData.data}`);
-               
-             
-                           
-            })
-            .catch(function(error) {
-                // verwerk de fout
-                console.log("fout : " + error);
-            });
     }
+
+
 
 
 
 
     //Event listner voor de maak project button
-    this.document.getElementById("btnMakeProject").addEventListener("click", function() {
+    this.document.getElementById("btnMakeProject").addEventListener("click", function () {
 
         if (projectname.value == "") {
             alert("gelieve iets in te tikken")
@@ -525,10 +497,10 @@ window.addEventListener('load', function() {
 
         //Doe een fetch
         fetch(url, opties)
-            .then(function(response) {
+            .then(function (response) {
                 return response;
             })
-            .then(function(responseData) {
+            .then(function (responseData) {
                 // test status van de response  
 
                 if (responseData.status < 200 || responseData.status > 299) {
@@ -541,7 +513,7 @@ window.addEventListener('load', function() {
                 haalProjectVanIngelogdeUser();
                 //TODO: Hier moet nog navigatie naar homescherm komen             
             })
-            .catch(function(error) {
+            .catch(function (error) {
                 // verwerk de fout
                 console.log("fout : " + error);
             });
