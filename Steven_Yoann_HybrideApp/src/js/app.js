@@ -384,7 +384,7 @@ window.addEventListener('load', function () {
                 // de verwerking van de data
                 var list = responseData.data;
                 console.log("lijst:");
-                console.log(list[0]);
+                console.log(list);
 
                 let tlines = "<table>";
                 tlines += `<tr> <th>ID</th><th>Project Naam</th><th>Tijd</th><th>User ID</th></tr>`
@@ -402,7 +402,7 @@ window.addEventListener('load', function () {
                     });
 
                     document.getElementById(`btnStartStop${i}`).addEventListener('click', function () {
-                        StartStopProject(list[i].id)
+                        StartStopProject(list[i].id, list[i].tijd)
                     })
 
                 }
@@ -460,22 +460,109 @@ window.addEventListener('load', function () {
     }
 
     //Start stop functie
+   //Variabelen die gebruikt worden voor de start stop functie
 
-    let start = false;
-    let eindTijd;
-    var tijd = 0;
+   let start = false;
+   let beginTijd = null;
+   let eindTijd = null;
 
-    function StartStopProject(index) {
+    function StartStopProject(index,projectTijd) {
 
-        Math.floor(Date.now() / 1000);
+        //Verander waarde van bool als erop knop geklikt wordt.
+        if(start == false){start=true; alert("start");}
+        else{start=false; alert("end");}
+
+        opties.body = JSON.stringify({
+            format: "json",
+            bewerking: "getTime",        
+            projectID: index
+        });
+
+        //Doe een fetch
+        fetch(url, opties)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (responseData) {
+                // test status van de response  
+
+                if (responseData.status < 200 || responseData.status > 299) {
+                    // Register faalde, boodschap weergeven                  
+                   // alert("fout");
+                    // return, zodat de rest van de fetch niet verder uitgevoerd wordt
+                    return;
+                }
+
+                //Bepaal hier of je begin of eind tijd wilt vullen.
+                if(start==true){beginTijd = new Date(responseData.data[0].CURRENT_TIMESTAMP);}
+                if(start==false){eindTijd = new Date(responseData.data[0].CURRENT_TIMESTAMP);}
+                console.log(responseData.data[0].CURRENT_TIMESTAMP);
+
+                //Als beide waarden ingevuld zijn maak je een verschil van de 2.
+                if(beginTijd != null && eindTijd != null){
+                   let tijdGewerktAanProject= (((eindTijd - beginTijd)/1000));
+                   tijdGewerktAanProject.toFixed(2);
+
+                   //Als deze variabele null is schrijf je 0. Dit is om += te kunnen uitvoeren
+                   if(projectTijd == null){                   
+                       projectTijd = 0;
+                   }
+
+                   //Doe de huidige projecttijd += de nieuwe gemeten tijd
+                   console.log(tijdGewerktAanProject.toFixed(2));
+                   projectTijd += parseInt(tijdGewerktAanProject.toFixed(2));
+
+                   //Methode die waarden in databank steekt.
+                   AddGewerkteTijdAanProject(projectTijd,index);
+                   
+                   //Als deze berekening gebeurt is zet je beide waarden terug op null
+                    beginTijd = null;
+                    eindTijd = null;
+                }           
+            })
+            .catch(function (error) {
+                // verwerk de fout
+                console.log("fout : " + error);
+            });
 
     }
 
+    //Methode om de gewerkte tijd in databank te steken. Deze heeft 2 parameters.
+    //TijdGewerktAanProject is de som van de oude tijd en de nieuwe.
+    //Index is het projectID
+    function AddGewerkteTijdAanProject(tijdGewerktAanProject,index){
 
+        opties.body = JSON.stringify({
+            format: "json",
+            bewerking: "registerTijd",
+            projectID: index,
+            projectTijd: tijdGewerktAanProject            
+        });
 
+        //Doe een fetch
+        fetch(url, opties)
+            .then(function (response) {
+                return response;
+            })
+            .then(function (responseData) {
+                // test status van de response  
 
+                if (responseData.status < 200 || responseData.status > 299) {
+                    // Register faalde, boodschap weergeven                  
+                    alert("fout");
+                    // return, zodat de rest van de fetch niet verder uitgevoerd wordt
+                    return;
+                }
+                alert(`project ${index} is succesvol aangepast`);
+                haalProjectVanIngelogdeUser();                        
+            })
+            .catch(function (error) {
+                // verwerk de fout
+                console.log("fout : " + error);
+            });
+    }
 
-
+    
     //Event listner voor de maak project button
     this.document.getElementById("btnMakeProject").addEventListener("click", function () {
 
