@@ -48,11 +48,15 @@ Aanmaken projecten en verwerken : 1,5uur
 Les: 4uur
 Probleem fixen na feedback leerkracht over register user : 1uur
 
-week10: 
+week10: 8uur
 
 Projecten laten zien op het scherm: 3uur
 Projecten kunnen verwijderen : 1uur
 Documenteren code: 0.5 uur
 Onthouden ingelogde user : 
 Les : 4uur
-g
+
+Week12: 6uur
+
+Timing voor het project inorde krijgen: 4uur
+Les: 2uur

@@ -562,10 +562,10 @@ window.addEventListener('load', function () {
             });
     }
 
-    
+
     //Event listner voor de maak project button
     this.document.getElementById("btnMakeProject").addEventListener("click", function () {
-
+        
         if (projectname.value == "") {
             alert("gelieve iets in te tikken")
             console.log(`naam : ${projectname.value}`);
