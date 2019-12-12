@@ -84,10 +84,11 @@ var app = new Framework7({
                 console.log(page.route.name);
                 //Controle of user ingelogd is --> zo niet  redirect naar home
                 if (ingelogdeUser == null) {
-                    app.router.navigate(app.views.main.router.url, {
+                    /*app.router.navigate(app.views.main.router.url, {
                         reloadCurrent: true
                     });
-                    location.reload();
+                    
+                    location.reload(); */
 
                 }
 
