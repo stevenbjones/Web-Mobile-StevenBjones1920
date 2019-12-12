@@ -461,16 +461,25 @@ window.addEventListener('load', function () {
 
     //Start stop functie
    //Variabelen die gebruikt worden voor de start stop functie
-
-   let start = false;
-   let beginTijd = null;
-   let eindTijd = null;
+   //We gaan deze variabelen gebruiken als een Dictionary 
+   let start = new Object();
+   let beginTijd = new Object();
+ 
 
     function StartStopProject(index,projectTijd) {
+        let eindTijd;        
+        
+        //Als de index(projectID) al bestaat in de dictionary wilt dit zeggen dat het de stop functie is.
+        //Test of de waarde al bestaat. Als het de stop functie is wordt deze waarde op het einde terug naar undefined gezet.
+        if(start[index]){
+            start[index] = false;
+            alert(`Project ${index} end"`);
+        }
+        else{
+            start[index]= true;
+            alert(`Project ${index} start"`);
+        }
 
-        //Verander waarde van bool als erop knop geklikt wordt.
-        if(start == false){start=true; alert("start");}
-        else{start=false; alert("end");}
 
         opties.body = JSON.stringify({
             format: "json",
@@ -494,13 +503,20 @@ window.addEventListener('load', function () {
                 }
 
                 //Bepaal hier of je begin of eind tijd wilt vullen.
-                if(start==true){beginTijd = new Date(responseData.data[0].CURRENT_TIMESTAMP);}
-                if(start==false){eindTijd = new Date(responseData.data[0].CURRENT_TIMESTAMP);}
+                //Als bool true is overwrite de begintijd
+                if(start[index]) {
+                  beginTijd[index] = new Date(responseData.data[0].CURRENT_TIMESTAMP);    
+                }
+                if(!start[index]) {
+                    eindTijd = new Date(responseData.data[0].CURRENT_TIMESTAMP);
+                    start[index] = undefined;
+                }
                 console.log(responseData.data[0].CURRENT_TIMESTAMP);
 
                 //Als beide waarden ingevuld zijn maak je een verschil van de 2.
-                if(beginTijd != null && eindTijd != null){
-                   let tijdGewerktAanProject= (((eindTijd - beginTijd)/1000));
+            
+                if(beginTijd[index] && eindTijd){
+                   let tijdGewerktAanProject= (((eindTijd - beginTijd[index])/1000));
                    tijdGewerktAanProject.toFixed(2);
 
                    //Als deze variabele null is schrijf je 0. Dit is om += te kunnen uitvoeren
@@ -514,10 +530,6 @@ window.addEventListener('load', function () {
 
                    //Methode die waarden in databank steekt.
                    AddGewerkteTijdAanProject(projectTijd,index);
-                   
-                   //Als deze berekening gebeurt is zet je beide waarden terug op null
-                    beginTijd = null;
-                    eindTijd = null;
                 }           
             })
             .catch(function (error) {
