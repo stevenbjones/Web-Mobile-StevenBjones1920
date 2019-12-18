@@ -25,7 +25,7 @@ var app = new Framework7({
     name: 'Steven_Yoann_HybrideApp', // App name
     theme: 'auto', // Automatic theme detection
     // App root data
-    data: function () {
+    data: function() {
         return {
             ingelogd: false,
 
@@ -37,13 +37,13 @@ var app = new Framework7({
                 tijd: [],
                 usr_id: [],
             },
-            ingelogdeUser:{}
+            ingelogdeUser: {}
 
         };
     },
     // App root methods
     methods: {
-        helloWorld: function () {
+        helloWorld: function() {
             alert('Hello World!');
         },
     },
@@ -63,7 +63,7 @@ var app = new Framework7({
     },
     on: {
 
-        init: function () {
+        init: function() {
             var f7 = this;
             if (f7.device.cordova) {
                 // Init cordova APIs (see cordova-app.js)
@@ -75,7 +75,7 @@ var app = new Framework7({
         //Registreer user
 
         // Deze functie werkt niet 
-        pageBeforeIn: function (page) {
+        pageBeforeIn: function(page) {
             if (page.route.name == "home") {
 
             }
@@ -96,7 +96,7 @@ var app = new Framework7({
 
 
         },
-        pageAfterIn: function (FormPage) {
+        pageAfterIn: function(FormPage) {
 
             console.log(`Dit is de globale variable : ${app.data.ingelogd}`)
             console.log(ingelogdeUser);
@@ -105,15 +105,15 @@ var app = new Framework7({
 
 
             //Maak event listner aan van de register button 
-            document.getElementById("btnRegister").addEventListener("click", function () {
+            document.getElementById("btnRegister").addEventListener("click", function() {
 
                 maakRequestBody("validatieLogin");
 
                 fetch(url, opties)
-                    .then(function (response) {
+                    .then(function(response) {
                         return response.json();
                     })
-                    .then(function (responseData) {
+                    .then(function(responseData) {
                         // test status van de response        
                         if (responseData.status < 200 || responseData.status > 299) {
                             // login faalde, boodschap weergeven                  
@@ -138,10 +138,10 @@ var app = new Framework7({
                             maakRequestBody("register");
                             //Doe een fetch
                             fetch(url, opties)
-                                .then(function (response) {
+                                .then(function(response) {
                                     return response;
                                 })
-                                .then(function (responseData) {
+                                .then(function(responseData) {
                                     // test status van de response  
 
                                     if (responseData.status < 200 || responseData.status > 299) {
@@ -153,7 +153,7 @@ var app = new Framework7({
                                     alert(`user ${username.value} is succesvol aangemaakt`)
                                     //TODO: Hier moet nog navigatie naar homescherm komen             
                                 })
-                                .catch(function (error) {
+                                .catch(function(error) {
                                     // verwerk de fout
                                     console.log("fout : " + error);
                                 });
@@ -162,7 +162,7 @@ var app = new Framework7({
 
                         }
                     })
-                    .catch(function (error) {
+                    .catch(function(error) {
                         // verwerk de fout                        
                         console.log("fout : " + error);
                     });
@@ -183,7 +183,7 @@ var app = new Framework7({
 
         },
 
-        pageAfterOut: function (CatalogPage) {
+        pageAfterOut: function(CatalogPage) {
             alert(ingelogdeUser);
         },
 
@@ -208,7 +208,7 @@ var opties = {
 
 console.log(url);
 //Maak eventListner aan voor onload pagina
-window.addEventListener('load', function () {
+window.addEventListener('load', function() {
 
     //TODO:
     //Is user al ingelogd --> local storage
@@ -256,7 +256,7 @@ window.addEventListener('load', function () {
     </div>
     `,
         on: {
-            opened: function () {
+            opened: function() {
                 console.log('Login Screen opened')
             }
         }
@@ -275,7 +275,7 @@ window.addEventListener('load', function () {
     let projectname = this.document.getElementById("projectName");
 
     //Event listner voor de login button
-    this.document.getElementById("btnLogin").addEventListener("click", function () {
+    this.document.getElementById("btnLogin").addEventListener("click", function() {
 
         if (username.value == "" || password.value == "") {
             console.log("Leeg username of leeg password");
@@ -307,10 +307,10 @@ window.addEventListener('load', function () {
 
         //Doe een fetch
         fetch(url, opties)
-            .then(function (response) {
+            .then(function(response) {
                 return response.json();
             })
-            .then(function (responseData) {
+            .then(function(responseData) {
                 // test status van de response        
                 if (responseData.status < 200 || responseData.status > 299) {
                     // login faalde, boodschap weergeven                  
@@ -339,7 +339,7 @@ window.addEventListener('load', function () {
                 }
 
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 // verwerk de fout
                 console.log("fout : " + error);
             });
@@ -354,7 +354,7 @@ window.addEventListener('load', function () {
               <div class="item-title">Registreren</div>
             </div>`
 
-            document.getElementById("registerLink").addEventListener("click", function () {
+            document.getElementById("registerLink").addEventListener("click", function() {
                 loginScreen.close();
             })
         }
@@ -373,10 +373,10 @@ window.addEventListener('load', function () {
         });
         //Doe een fetch
         fetch(url, opties)
-            .then(function (response) {
+            .then(function(response) {
                 return response.json();
             })
-            .then(function (responseData) {
+            .then(function(responseData) {
                 // test status van de response        
                 if (responseData.status < 200 || responseData.status > 299) {
                     return;
@@ -398,11 +398,11 @@ window.addEventListener('load', function () {
 
                 //Maak een eventListner click voor elke button. Deze button delete het project
                 for (let i = 0; i < list.length; i++) {
-                    document.getElementById(`btnDelete${i}`).addEventListener('click', function () {
+                    document.getElementById(`btnDelete${i}`).addEventListener('click', function() {
                         DeleteProject(list[i].id)
                     });
 
-                    document.getElementById(`btnStartStop${i}`).addEventListener('click', function () {
+                    document.getElementById(`btnStartStop${i}`).addEventListener('click', function() {
                         StartStopProject(list[i].id, list[i].tijd)
                     })
 
@@ -417,7 +417,7 @@ window.addEventListener('load', function () {
                    }
                  */
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 // verwerk de fout
                 console.log("fout : " + error);
             });
@@ -438,10 +438,10 @@ window.addEventListener('load', function () {
 
         //Doe een fetch
         fetch(url, opties)
-            .then(function (response) {
+            .then(function(response) {
                 return response;
             })
-            .then(function (responseData) {
+            .then(function(responseData) {
                 // test status van de response  
 
                 if (responseData.status < 200 || responseData.status > 299) {
@@ -454,86 +454,85 @@ window.addEventListener('load', function () {
                 haalProjectVanIngelogdeUser();
                 //TODO: Hier moet nog navigatie naar homescherm komen             
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 // verwerk de fout
                 console.log("fout : " + error);
             });
     }
 
     //Start stop functie
-   //Variabelen die gebruikt worden voor de start stop functie
-   //We gaan deze variabelen gebruiken als een Dictionary 
-   let start = new Object();
-   let beginTijd = new Object();
- 
+    //Variabelen die gebruikt worden voor de start stop functie
+    //We gaan deze variabelen gebruiken als een Dictionary 
+    let start = new Object();
+    let beginTijd = new Object();
 
-    function StartStopProject(index,projectTijd) {
-        let eindTijd;        
-        
+
+    function StartStopProject(index, projectTijd) {
+        let eindTijd;
+
         //Als de index(projectID) al bestaat in de dictionary wilt dit zeggen dat het de stop functie is.
         //Test of de waarde al bestaat. Als het de stop functie is wordt deze waarde op het einde terug naar undefined gezet.
-        if(start[index]){
+        if (start[index]) {
             start[index] = false;
             alert(`Project ${index} end"`);
-        }
-        else{
-            start[index]= true;
+        } else {
+            start[index] = true;
             alert(`Project ${index} start"`);
         }
 
 
         opties.body = JSON.stringify({
             format: "json",
-            bewerking: "getTime",        
+            bewerking: "getTime",
             projectID: index
         });
 
         //Doe een fetch
         fetch(url, opties)
-            .then(function (response) {
+            .then(function(response) {
                 return response.json();
             })
-            .then(function (responseData) {
+            .then(function(responseData) {
                 // test status van de response  
 
                 if (responseData.status < 200 || responseData.status > 299) {
                     // Register faalde, boodschap weergeven                  
-                   // alert("fout");
+                    // alert("fout");
                     // return, zodat de rest van de fetch niet verder uitgevoerd wordt
                     return;
                 }
 
                 //Bepaal hier of je begin of eind tijd wilt vullen.
                 //Als bool true is overwrite de begintijd
-                if(start[index]) {
-                  beginTijd[index] = new Date(responseData.data[0].CURRENT_TIMESTAMP);    
+                if (start[index]) {
+                    beginTijd[index] = new Date(responseData.data[0].CURRENT_TIMESTAMP);
                 }
-                if(!start[index]) {
+                if (!start[index]) {
                     eindTijd = new Date(responseData.data[0].CURRENT_TIMESTAMP);
                     start[index] = undefined;
                 }
                 console.log(responseData.data[0].CURRENT_TIMESTAMP);
 
                 //Als beide waarden ingevuld zijn maak je een verschil van de 2.
-            
-                if(beginTijd[index] && eindTijd){
-                   let tijdGewerktAanProject= (((eindTijd - beginTijd[index])/1000));
-                   tijdGewerktAanProject.toFixed(2);
 
-                   //Als deze variabele null is schrijf je 0. Dit is om += te kunnen uitvoeren
-                   if(projectTijd == null){                   
-                       projectTijd = 0;
-                   }
+                if (beginTijd[index] && eindTijd) {
+                    let tijdGewerktAanProject = (((eindTijd - beginTijd[index]) / 1000));
+                    tijdGewerktAanProject.toFixed(2);
 
-                   //Doe de huidige projecttijd += de nieuwe gemeten tijd
-                   console.log(tijdGewerktAanProject.toFixed(2));
-                   projectTijd += parseInt(tijdGewerktAanProject.toFixed(2));
+                    //Als deze variabele null is schrijf je 0. Dit is om += te kunnen uitvoeren
+                    if (projectTijd == null) {
+                        projectTijd = 0;
+                    }
 
-                   //Methode die waarden in databank steekt.
-                   AddGewerkteTijdAanProject(projectTijd,index);
-                }           
+                    //Doe de huidige projecttijd += de nieuwe gemeten tijd
+                    console.log(tijdGewerktAanProject.toFixed(2));
+                    projectTijd += parseInt(tijdGewerktAanProject.toFixed(2));
+
+                    //Methode die waarden in databank steekt.
+                    AddGewerkteTijdAanProject(projectTijd, index);
+                }
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 // verwerk de fout
                 console.log("fout : " + error);
             });
@@ -543,21 +542,21 @@ window.addEventListener('load', function () {
     //Methode om de gewerkte tijd in databank te steken. Deze heeft 2 parameters.
     //TijdGewerktAanProject is de som van de oude tijd en de nieuwe.
     //Index is het projectID
-    function AddGewerkteTijdAanProject(tijdGewerktAanProject,index){
+    function AddGewerkteTijdAanProject(tijdGewerktAanProject, index) {
 
         opties.body = JSON.stringify({
             format: "json",
             bewerking: "registerTijd",
             projectID: index,
-            projectTijd: tijdGewerktAanProject            
+            projectTijd: tijdGewerktAanProject
         });
 
         //Doe een fetch
         fetch(url, opties)
-            .then(function (response) {
+            .then(function(response) {
                 return response;
             })
-            .then(function (responseData) {
+            .then(function(responseData) {
                 // test status van de response  
 
                 if (responseData.status < 200 || responseData.status > 299) {
@@ -567,9 +566,9 @@ window.addEventListener('load', function () {
                     return;
                 }
                 alert(`project ${index} is succesvol aangepast`);
-                haalProjectVanIngelogdeUser();                        
+                haalProjectVanIngelogdeUser();
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 // verwerk de fout
                 console.log("fout : " + error);
             });
@@ -577,8 +576,8 @@ window.addEventListener('load', function () {
 
 
     //Event listner voor de maak project button
-    this.document.getElementById("btnMakeProject").addEventListener("click", function () {
-        
+    this.document.getElementById("btnMakeProject").addEventListener("click", function() {
+
         if (projectname.value == "") {
             alert("gelieve iets in te tikken")
             console.log(`naam : ${projectname.value}`);
@@ -597,10 +596,10 @@ window.addEventListener('load', function () {
 
         //Doe een fetch
         fetch(url, opties)
-            .then(function (response) {
+            .then(function(response) {
                 return response;
             })
-            .then(function (responseData) {
+            .then(function(responseData) {
                 // test status van de response  
 
                 if (responseData.status < 200 || responseData.status > 299) {
@@ -613,7 +612,7 @@ window.addEventListener('load', function () {
                 haalProjectVanIngelogdeUser();
                 //TODO: Hier moet nog navigatie naar homescherm komen             
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 // verwerk de fout
                 console.log("fout : " + error);
             });
