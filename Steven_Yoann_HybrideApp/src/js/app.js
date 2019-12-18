@@ -130,8 +130,7 @@ var app = new Framework7({
                             //Hier wilt zeggen dat de user bestaat, close de login
                             console.log("user bestaat");
                             console.log(responseData);
-                            alert("gelive een andere username in te geven , deze bestaat al");
-
+                            app.dialog.alert(`Gelieve een andere username in te geven , deze bestaat al`, "Error: register");
                         } else {
                             console.log("user bestaat niet");
                             //Roep api op met bewerking register
@@ -146,11 +145,11 @@ var app = new Framework7({
 
                                     if (responseData.status < 200 || responseData.status > 299) {
                                         // Register faalde, boodschap weergeven                  
-                                        alert("fout");
+                                        app.dialog.alert(`fout`, "Error: register");
                                         // return, zodat de rest van de fetch niet verder uitgevoerd wordt
                                         return;
                                     }
-                                    alert(`user ${username.value} is succesvol aangemaakt`)
+                                    app.dialog.alert(`user ${username.value} is succesvol aangemaakt`, "Register succes");    
                                     //TODO: Hier moet nog navigatie naar homescherm komen             
                                 })
                                 .catch(function(error) {
@@ -182,11 +181,6 @@ var app = new Framework7({
 
 
         },
-
-        pageAfterOut: function(CatalogPage) {
-            alert(ingelogdeUser);
-        },
-
         /////////////////////////////////////////    
     },
 });
@@ -391,7 +385,7 @@ window.addEventListener('load', function() {
                 tlines += `<tr> <th>ID</th><th>Project Naam</th><th>Tijd</th><th>User ID</th></tr>`
                 //Maak html objecten aan voor de data van de projecten
                 for (let i = 0; i < list.length; i++) {
-                    tlines += `<tr> <td>${list[i].id}</td> <td>${ list[i].naam}</td> <td>${ list[i].tijd}</td><td>${ list[i].usr_id}</td> <td><button id=btnDelete${i}> Verwijder</button></td> <td><button id=btnStartStop${i}> start-stop</button></td> </tr>`;
+                    tlines += `<tr> <td>${list[i].id}</td> <td>${ list[i].naam}</td> <td>${ list[i].tijd}</td><td>${ list[i].usr_id}</td> <td><button id=btnDelete${i}> Verwijder</button></td> <td><button id=btnStartStop${i}> <i class="f7-icons size-25" id=icon${i} >play</i> </button></td> </tr>  `;
                 }
                 //Steek in een div van page catalog de projecten.
                 document.getElementById("pList").innerHTML = tlines;
@@ -403,7 +397,7 @@ window.addEventListener('load', function() {
                     });
 
                     document.getElementById(`btnStartStop${i}`).addEventListener('click', function() {
-                        StartStopProject(list[i].id, list[i].tijd)
+                        StartStopProject(list[i].id, list[i].tijd,i)
                     })
 
                 }
@@ -445,12 +439,12 @@ window.addEventListener('load', function() {
                 // test status van de response  
 
                 if (responseData.status < 200 || responseData.status > 299) {
-                    // Register faalde, boodschap weergeven                  
-                    alert("fout");
+                    // Register faalde, boodschap weergeven 
+                    app.dialog.alert(`fout`, "Error: register");
                     // return, zodat de rest van de fetch niet verder uitgevoerd wordt
                     return;
                 }
-                alert(`project ${projectname.value} is succesvol gedelete`);
+                app.dialog.alert(`project ${projectname.value} is succesvol gedelete`, "Delete succes");                
                 haalProjectVanIngelogdeUser();
                 //TODO: Hier moet nog navigatie naar homescherm komen             
             })
@@ -467,17 +461,18 @@ window.addEventListener('load', function() {
     let beginTijd = new Object();
 
 
-    function StartStopProject(index, projectTijd) {
+    function StartStopProject(index, projectTijd, iconId) {
         let eindTijd;
 
         //Als de index(projectID) al bestaat in de dictionary wilt dit zeggen dat het de stop functie is.
         //Test of de waarde al bestaat. Als het de stop functie is wordt deze waarde op het einde terug naar undefined gezet.
         if (start[index]) {
             start[index] = false;
-            alert(`Project ${index} end"`);
+            app.dialog.alert(`De time management van het project ${index} wordt geëindigd`, "Einde");
         } else {
             start[index] = true;
-            alert(`Project ${index} start"`);
+            app.dialog.alert(`De time management van het project ${index} wordt gestart`, "Start");          
+            document.getElementById(`icon${iconId}`).innerHTML = "pause";
         }
 
 
@@ -495,10 +490,7 @@ window.addEventListener('load', function() {
             .then(function(responseData) {
                 // test status van de response  
 
-                if (responseData.status < 200 || responseData.status > 299) {
-                    // Register faalde, boodschap weergeven                  
-                    // alert("fout");
-                    // return, zodat de rest van de fetch niet verder uitgevoerd wordt
+                if (responseData.status < 200 || responseData.status > 299) {                   
                     return;
                 }
 
@@ -560,12 +552,14 @@ window.addEventListener('load', function() {
                 // test status van de response  
 
                 if (responseData.status < 200 || responseData.status > 299) {
-                    // Register faalde, boodschap weergeven                  
-                    alert("fout");
+                    // Update faalde, boodschap weergeven                  
+                    app.dialog.alert(`De tijd is niet geupdate`, "Error: update tijd");
+            
                     // return, zodat de rest van de fetch niet verder uitgevoerd wordt
                     return;
                 }
-                alert(`project ${index} is succesvol aangepast`);
+                
+                app.dialog.alert(`project ${index} is succesvol aangepast`, "Update succes");
                 haalProjectVanIngelogdeUser();
             })
             .catch(function(error) {
@@ -579,7 +573,8 @@ window.addEventListener('load', function() {
     this.document.getElementById("btnMakeProject").addEventListener("click", function() {
 
         if (projectname.value == "") {
-            alert("gelieve iets in te tikken")
+            
+            app.dialog.alert(`Gelieve een project in te vullen`, "Error: leeg project");  
             console.log(`naam : ${projectname.value}`);
             console.log(ingelogdeUser["id"]);
             return;
@@ -604,11 +599,11 @@ window.addEventListener('load', function() {
 
                 if (responseData.status < 200 || responseData.status > 299) {
                     // Register faalde, boodschap weergeven                  
-                    alert("fout");
+                    app.dialog.alert(`project ${projectname.value} is niet aangemaakt`, "Error: register project");
                     // return, zodat de rest van de fetch niet verder uitgevoerd wordt
                     return;
                 }
-                alert(`project ${projectname.value} is succesvol aangemaakt`);
+                app.dialog.alert(`project ${projectname.value} is succesvol aangemaakt`, "Register succes");
                 haalProjectVanIngelogdeUser();
                 //TODO: Hier moet nog navigatie naar homescherm komen             
             })
