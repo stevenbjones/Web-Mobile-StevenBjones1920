@@ -13,6 +13,12 @@ import cordovaApp from './cordova-app.js';
 import routes from './routes.js';
 
 
+var ingelogdeUser = null;
+
+// url van de api
+var url = "http://stevenbjones.azurewebsites.net/php/api.php";
+var loginScreen;
+
 var app = new Framework7({
     root: '#app', // App root element
     id: 'io.framework7.Steven_Yoann_HybrideApp', // App bundle ID
@@ -31,6 +37,7 @@ var app = new Framework7({
                 tijd: [],
                 usr_id: [],
             },
+            ingelogdeUser: {}
 
         };
     },
@@ -68,28 +75,25 @@ var app = new Framework7({
         //Registreer user
 
         // Deze functie werkt niet 
-        pageBeforeIn: function(page){
-            if(page.route.name!=="home"){
-                console.log("Nu niet op home");
+        pageBeforeIn: function(page) {
+            if (page.route.name == "home") {
+
+            }
+            console.log(page.route.name);
+            if (!page.route.name || page.route.name !== "home") {
+                console.log(page.route.name);
                 //Controle of user ingelogd is --> zo niet  redirect naar home
-                if(ingelogdeUser == null){
-                    //location.reload();
-                   // app.router.navigate(app.views.main.router.url,{reloadCurrent: true});
-                 
+                if (ingelogdeUser == null) {
+                    /*app.router.navigate(app.views.main.router.url, {
+                        reloadCurrent: true
+                    });
+                    
+                    location.reload(); */
+
                 }
-                
+
             }
 
-            if(page.route.name=="form" ){
-                console.log("Nu op register");
-                //Controle of user ingelogd is --> zo niet  redirect naar home
-                if(ingelogdeUser == null){
-                    //location.reload();
-                   // app.router.navigate(app.views.main.router.url,{reloadCurrent: true});
-                 
-                }
-                
-            }
 
         },
         pageAfterIn: function(FormPage) {
@@ -126,8 +130,7 @@ var app = new Framework7({
                             //Hier wilt zeggen dat de user bestaat, close de login
                             console.log("user bestaat");
                             console.log(responseData);
-                            alert("gelive een andere username in te geven , deze bestaat al");
-
+                            app.dialog.alert(`Gelieve een andere username in te geven , deze bestaat al`, "Error: register");
                         } else {
                             console.log("user bestaat niet");
                             //Roep api op met bewerking register
@@ -142,11 +145,11 @@ var app = new Framework7({
 
                                     if (responseData.status < 200 || responseData.status > 299) {
                                         // Register faalde, boodschap weergeven                  
-                                        alert("fout");
+                                        app.dialog.alert(`fout`, "Error: register");
                                         // return, zodat de rest van de fetch niet verder uitgevoerd wordt
                                         return;
                                     }
-                                    alert(`user ${username.value} is succesvol aangemaakt`)
+                                    app.dialog.alert(`user ${username.value} is succesvol aangemaakt`, "Register succes");    
                                     //TODO: Hier moet nog navigatie naar homescherm komen             
                                 })
                                 .catch(function(error) {
@@ -178,11 +181,6 @@ var app = new Framework7({
 
 
         },
-
-        pageAfterOut: function(CatalogPage) {
-            alert(ingelogdeUser);
-        },
-
         /////////////////////////////////////////    
     },
 });
@@ -201,12 +199,7 @@ var opties = {
     }
 };
 
-//object van de user die ingelogd is. Deze heeft de volgende properties: 
-//id,naam,passwoord
-var ingelogdeUser;
 
-// url van de api
-let url = "http://stevenbjones.azurewebsites.net/php/api.php";
 console.log(url);
 //Maak eventListner aan voor onload pagina
 window.addEventListener('load', function() {
@@ -216,7 +209,7 @@ window.addEventListener('load', function() {
     //Usernaam / bool
 
     //Maak loginscreen aan 
-    let loginScreen = app.loginScreen.create({
+    loginScreen = app.loginScreen.create({
         content: `
     <div class="login-screen" id="my-login-screen">
       <div class="view">
@@ -290,10 +283,10 @@ window.addEventListener('load', function() {
         TestLogin();
 
         //Bij login neem project naam over om deze als tittel te zetten
-        
+
     })
 
-    
+
     //Functie om ingegeven login te testen, doet een get naar de databank
     function TestLogin() {
         console.log("testLoginFunctie");
@@ -324,7 +317,7 @@ window.addEventListener('load', function() {
                 console.log(list);
                 ingelogdeUser = responseData.data[0];
 
-            
+
 
                 if (Object.keys(list).length > 0) {
 
@@ -382,17 +375,17 @@ window.addEventListener('load', function() {
                 if (responseData.status < 200 || responseData.status > 299) {
                     return;
                 }
-               
+
                 // de verwerking van de data
                 var list = responseData.data;
                 console.log("lijst:");
-                console.log(list[0]);
+                console.log(list);
 
                 let tlines = "<table>";
                 tlines += `<tr> <th>ID</th><th>Project Naam</th><th>Tijd</th><th>User ID</th></tr>`
                 //Maak html objecten aan voor de data van de projecten
                 for (let i = 0; i < list.length; i++) {
-                    tlines += `<tr> <td>${list[i].id}</td> <td>${ list[i].naam}</td> <td>${ list[i].tijd}</td><td>${ list[i].usr_id}</td> <td><button id=btnDelete${i}> Verwijder</button></td> <td><button id=btnStartStop${i}> start-stop</button></td> </tr>`;
+                    tlines += `<tr> <td>${list[i].id}</td> <td>${ list[i].naam}</td> <td>${ list[i].tijd}</td><td>${ list[i].usr_id}</td> <td><button id=btnDelete${i}> Verwijder</button></td> <td><button id=btnStartStop${i}> <i class="f7-icons size-25" id=icon${i} >play</i> </button></td> </tr>  `;
                 }
                 //Steek in een div van page catalog de projecten.
                 document.getElementById("pList").innerHTML = tlines;
@@ -404,9 +397,9 @@ window.addEventListener('load', function() {
                     });
 
                     document.getElementById(`btnStartStop${i}`).addEventListener('click', function() {
-                        StartStopProject(list[i].id)
+                        StartStopProject(list[i].id, list[i].tijd,i)
                     })
-                   
+
                 }
                 /*
                     //Deze code is nu niet meer nodig omdat we niet met de app data werken. Mss komt dit nog terug
@@ -446,12 +439,12 @@ window.addEventListener('load', function() {
                 // test status van de response  
 
                 if (responseData.status < 200 || responseData.status > 299) {
-                    // Register faalde, boodschap weergeven                  
-                    alert("fout");
+                    // Register faalde, boodschap weergeven 
+                    app.dialog.alert(`fout`, "Error: register");
                     // return, zodat de rest van de fetch niet verder uitgevoerd wordt
                     return;
                 }
-                alert(`project ${projectname.value} is succesvol gedelete`);
+                app.dialog.alert(`project ${projectname.value} is succesvol gedelete`, "Delete succes");                
                 haalProjectVanIngelogdeUser();
                 //TODO: Hier moet nog navigatie naar homescherm komen             
             })
@@ -461,16 +454,32 @@ window.addEventListener('load', function() {
             });
     }
 
-    //Star stop functie
+    //Start stop functie
+    //Variabelen die gebruikt worden voor de start stop functie
+    //We gaan deze variabelen gebruiken als een Dictionary 
+    let start = new Object();
+    let beginTijd = new Object();
 
-    let startTijd;
-    let eindTijd;
-    function StartStopProject(index) {
+
+    function StartStopProject(index, projectTijd, iconId) {
+        let eindTijd;
+
+        //Als de index(projectID) al bestaat in de dictionary wilt dit zeggen dat het de stop functie is.
+        //Test of de waarde al bestaat. Als het de stop functie is wordt deze waarde op het einde terug naar undefined gezet.
+        if (start[index]) {
+            start[index] = false;
+            app.dialog.alert(`De time management van het project ${index} wordt geëindigd`, "Einde");
+        } else {
+            start[index] = true;
+            app.dialog.alert(`De time management van het project ${index} wordt gestart`, "Start");          
+            document.getElementById(`icon${iconId}`).innerHTML = "pause";
+        }
+
 
         opties.body = JSON.stringify({
             format: "json",
             bewerking: "getTime",
-            projectID: index,
+            projectID: index
         });
 
         //Doe een fetch
@@ -481,19 +490,77 @@ window.addEventListener('load', function() {
             .then(function(responseData) {
                 // test status van de response  
 
+                if (responseData.status < 200 || responseData.status > 299) {                   
+                    return;
+                }
+
+                //Bepaal hier of je begin of eind tijd wilt vullen.
+                //Als bool true is overwrite de begintijd
+                if (start[index]) {
+                    beginTijd[index] = new Date(responseData.data[0].CURRENT_TIMESTAMP);
+                }
+                if (!start[index]) {
+                    eindTijd = new Date(responseData.data[0].CURRENT_TIMESTAMP);
+                    start[index] = undefined;
+                }
+                console.log(responseData.data[0].CURRENT_TIMESTAMP);
+
+                //Als beide waarden ingevuld zijn maak je een verschil van de 2.
+
+                if (beginTijd[index] && eindTijd) {
+                    let tijdGewerktAanProject = (((eindTijd - beginTijd[index]) / 1000));
+                    tijdGewerktAanProject.toFixed(2);
+
+                    //Als deze variabele null is schrijf je 0. Dit is om += te kunnen uitvoeren
+                    if (projectTijd == null) {
+                        projectTijd = 0;
+                    }
+
+                    //Doe de huidige projecttijd += de nieuwe gemeten tijd
+                    console.log(tijdGewerktAanProject.toFixed(2));
+                    projectTijd += parseInt(tijdGewerktAanProject.toFixed(2));
+
+                    //Methode die waarden in databank steekt.
+                    AddGewerkteTijdAanProject(projectTijd, index);
+                }
+            })
+            .catch(function(error) {
+                // verwerk de fout
+                console.log("fout : " + error);
+            });
+
+    }
+
+    //Methode om de gewerkte tijd in databank te steken. Deze heeft 2 parameters.
+    //TijdGewerktAanProject is de som van de oude tijd en de nieuwe.
+    //Index is het projectID
+    function AddGewerkteTijdAanProject(tijdGewerktAanProject, index) {
+
+        opties.body = JSON.stringify({
+            format: "json",
+            bewerking: "registerTijd",
+            projectID: index,
+            projectTijd: tijdGewerktAanProject
+        });
+
+        //Doe een fetch
+        fetch(url, opties)
+            .then(function(response) {
+                return response;
+            })
+            .then(function(responseData) {
+                // test status van de response  
+
                 if (responseData.status < 200 || responseData.status > 299) {
-                    // Register faalde, boodschap weergeven                  
-                    alert("fout");
-                    console.log(responseData);                    
+                    // Update faalde, boodschap weergeven                  
+                    app.dialog.alert(`De tijd is niet geupdate`, "Error: update tijd");
+            
                     // return, zodat de rest van de fetch niet verder uitgevoerd wordt
                     return;
                 }
-              
-            console.log(`response : ${responseData}`); 
-            console.log(`data : ${responseData.data}`);
-               
-             
-                           
+                
+                app.dialog.alert(`project ${index} is succesvol aangepast`, "Update succes");
+                haalProjectVanIngelogdeUser();
             })
             .catch(function(error) {
                 // verwerk de fout
@@ -502,13 +569,12 @@ window.addEventListener('load', function() {
     }
 
 
-
-
     //Event listner voor de maak project button
     this.document.getElementById("btnMakeProject").addEventListener("click", function() {
 
         if (projectname.value == "") {
-            alert("gelieve iets in te tikken")
+            
+            app.dialog.alert(`Gelieve een project in te vullen`, "Error: leeg project");  
             console.log(`naam : ${projectname.value}`);
             console.log(ingelogdeUser["id"]);
             return;
@@ -533,11 +599,11 @@ window.addEventListener('load', function() {
 
                 if (responseData.status < 200 || responseData.status > 299) {
                     // Register faalde, boodschap weergeven                  
-                    alert("fout");
+                    app.dialog.alert(`project ${projectname.value} is niet aangemaakt`, "Error: register project");
                     // return, zodat de rest van de fetch niet verder uitgevoerd wordt
                     return;
                 }
-                alert(`project ${projectname.value} is succesvol aangemaakt`);
+                app.dialog.alert(`project ${projectname.value} is succesvol aangemaakt`, "Register succes");
                 haalProjectVanIngelogdeUser();
                 //TODO: Hier moet nog navigatie naar homescherm komen             
             })
