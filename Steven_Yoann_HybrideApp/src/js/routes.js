@@ -8,11 +8,13 @@ import SettingsPage from '../pages/settings.f7.html';
 import DynamicRoutePage from '../pages/dynamic-route.f7.html';
 import RequestAndLoad from '../pages/request-and-load.f7.html';
 import NotFoundPage from '../pages/404.f7.html';
+import { homedir } from 'os';
 
 var routes = [
   {
     path: '/',
     component: HomePage,
+    name:"home"
   },
   {
     path: '/about/',
