@@ -1,0 +1,1 @@
+Android manifitest --> plain text moet op true
